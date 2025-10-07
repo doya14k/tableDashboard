@@ -9,6 +9,9 @@
 #include "main.h"
 #include <Arduino.h>
 
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include <Arduino_JSON.h>
 
 // .--------------------------------------------------------------------------.
 // |  ____ _       _           _  __     __         _       _     _           |
@@ -18,6 +21,9 @@
 // | \____|_|\___/|_.__/ \__,_|_|    \_/ \__,_|_|  |_|\__,_|_.__/|_|\___||___/|
 // '--------------------------------------------------------------------------'
 
+const char *ssid = "brz-63878";
+const char *password = "eqao-25ds-iry4-8imk";
+const char *weatherApiUrl;
 
 // .----------------------------------------------------.
 // | _____                 _   _                        |
@@ -32,6 +38,24 @@
 // |                              |___/|_|              |
 // '----------------------------------------------------'
 
+String httpGETRequest(const char *serverName)
+{
+  HTTPClient http;
+  http.begin(serverName);
+  int httpResponseCode = http.GET();
+  String payload = "{}";
+  if (httpResponseCode > 0)
+  {
+    payload = http.getString();
+  }
+  else
+  {
+    Serial.print("HTTP GET failed, error: ");
+    Serial.println(httpResponseCode);
+  }
+  http.end();
+  return payload;
+}
 
 // .----------------------------.
 // | ____       _               |
@@ -45,9 +69,23 @@
 void setup()
 {
   Serial.begin(115200);
-  Serial.println("Setup gestartet");
-}
+  Serial.println("Setup started");
 
+  WiFi.begin(ssid, password);
+  Serial.println("Connecting");
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("");
+  Serial.print("Connected to WiFi network with IP Address: ");
+  Serial.println(WiFi.localIP());
+
+  Serial.println("Timer set to 10 seconds (timerDelay variable), it will take 10 seconds before publishing the first reading.");
+
+  Serial.println("Setup ended");
+}
 
 // .------------------------.
 // | _                      |
@@ -58,10 +96,47 @@ void setup()
 // |                 |_|    |
 // '------------------------'
 
+String weatherVersionApi_buffer;
+String weatherForecastApi_buffer;
+
 void loop()
 {
-  Serial.println("Loop läuft...");
-  delay(2000);
+
+  if (WiFi.status() == WL_CONNECTED)
+  {
+
+    weatherVersionApi_buffer = httpGETRequest(WEATER_API_VERSIONS);
+    // Serial.println(jsonBuffer);
+    JSONVar versionData_JSON = JSON.parse(weatherVersionApi_buffer);
+
+    String forecastVersion = (const char *)versionData_JSON["weather-widget/forecast"];
+
+    String weaterApiForecastUrl = "https://www.meteoschweiz.admin.ch/product/output/weather-widget/forecast/version__" + forecastVersion + String("/de/") + ZIP + "00.json";
+    weatherForecastApi_buffer = httpGETRequest(weaterApiForecastUrl.c_str());
+
+    JSONVar forecastData_JSON = JSON.parse(weatherForecastApi_buffer);
+
+    // JSON.typeof(jsonVar) can be used to get the type of the var
+    if (JSON.typeof(versionData_JSON) == "undefined")
+    {
+      Serial.println("Parsing input failed!");
+      return;
+    }
+    // Serial.print("Forecast object = ");
+    // Serial.println(forecastData_JSON);
+
+    Serial.print("City Name ");
+    Serial.println(forecastData_JSON["data"]["city_name"]);
+
+    Serial.print("weather-widget/forecast: ");
+    Serial.println(versionData_JSON["weather-widget/forecast"]);
+  }
+  else
+  {
+    Serial.println("WiFi Disconnected");
+  }
+
+  delay(10000); // alle 10 Sekunden
 }
 
 // // Beispiel: Touch an GPIO4 (T0)

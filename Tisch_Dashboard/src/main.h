@@ -14,9 +14,6 @@
 #include "TouchManager.h"
 #include "WeatherAPI_Manager.h"
 
-
-
-
 // .--------------------------------------------.
 // | ____  _             _                ___   |
 // ||  _ \(_)_ __  _ __ (_)_ __   __ _   ( _ )  |
@@ -46,7 +43,7 @@
 #define EPD_BUSY_PIN 25
 */
 
-#define SPI_MISO_PIN 19 
+#define SPI_MISO_PIN 19
 
 // .-----------------.
 // | ___ ____   ____ |
@@ -87,4 +84,8 @@
 #define CD1_PIN 14
 #define CS_SD_CARD_PIN 8
 
+// API URL --> to be moved to its module
 
+#define WEATER_API_VERSIONS "https://www.meteoschweiz.admin.ch/product/output/versions.json"
+
+#define ZIP "7000" // Chur
