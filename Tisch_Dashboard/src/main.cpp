@@ -187,20 +187,20 @@ void setup()
   Paint_Clear(WHITE);
 
   // Text in der Mitte platzieren
-const char message[] = "23:59 12" "\x7F" "C";
-  int textX = (EPD_7IN5_V2_WIDTH - (strlen(message) * OrbitronRegular20.Width)) / 2;
-  int textY = (EPD_7IN5_V2_HEIGHT - OrbitronRegular20.Height) / 2;
-  Paint_DrawString_EN(textX, textY, message, &OrbitronRegular20, WHITE, BLACK);
+  // const char message[] = "23:59 12" "\x7F" "C";
+  //   int textX = (EPD_7IN5_V2_WIDTH - (strlen(message) * OrbitronRegular20.Width)) / 2;
+  //   int textY = (EPD_7IN5_V2_HEIGHT - OrbitronRegular20.Height) / 2;
+  //   Paint_DrawString_EN(textX, textY, message, &OrbitronRegular20, WHITE, BLACK);
+
+  //   // Anzeigen
+  //   EPD_7IN5_V2_Display(BlackImage);
+  //   DEV_Delay_ms(8000); // 8 Sekunden warten
 
   // Anzeigen
+  Paint_SelectImage(BlackImage);
+  Paint_DrawImage(houseFilled_40x40_bits, 10, 10, houseFilled_40x40_width, houseFilled_40x40_height);
   EPD_7IN5_V2_Display(BlackImage);
   DEV_Delay_ms(8000); // 8 Sekunden warten
-
-  // Anzeigen
-  // Paint_SelectImage(BlackImage);
-  // Paint_DrawImage(gImage_dackel, 0, 0, 612, 459);
-  // EPD_7IN5_V2_Display(BlackImage);
-  // DEV_Delay_ms(8000); // 8 Sekunden warten
 
   for (int i = 0; i < 5; i++)
   {

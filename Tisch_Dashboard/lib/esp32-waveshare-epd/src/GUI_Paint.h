@@ -81,6 +81,8 @@
 #include "utility/Debug.h"
 #include "DEV_Config.h"
 #include "fonts.h"
+#include "icons_images/weatherIcons.c"
+#include "icons_images/Icons_house_40x40.c"
 
 /**
  * Image attributes
