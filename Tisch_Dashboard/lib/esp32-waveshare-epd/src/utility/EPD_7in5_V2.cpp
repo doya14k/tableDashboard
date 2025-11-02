@@ -85,12 +85,12 @@ parameter:
 ******************************************************************************/
 static void EPD_WaitUntilIdle(void)
 {
-    Debug("e-Paper busy\r\n");
+    // Debug("e-Paper busy\r\n");
 	do{
 		DEV_Delay_ms(5);  
 	}while(!(DEV_Digital_Read(EPD_BUSY_PIN)));   
 	DEV_Delay_ms(5);      
-    Debug("e-Paper busy release\r\n");
+    // Debug("e-Paper busy release\r\n");
 }
 /******************************************************************************
 function :	Turn On Display

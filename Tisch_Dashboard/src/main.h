@@ -10,7 +10,6 @@
 #include "DisplayManager.h"
 #include "RTCManager.h"
 #include "TempSensorManager.h"
-#include "TimeAPI_Manager.h"
 #include "TouchManager.h"
 #include "WeatherAPI_Manager.h"
 

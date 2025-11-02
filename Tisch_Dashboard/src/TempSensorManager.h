@@ -23,3 +23,7 @@
 // -------------------------------------------
 // FUNKTIONSDEKLARATIONEN (globale Schnittstelle)
 // -------------------------------------------
+void tempSensor_init();
+
+float tempSensor_getTemperature();
+

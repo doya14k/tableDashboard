@@ -159,10 +159,20 @@
 #include "fonts.h"
 #include <stdlib.h>
 
+#include "TempSensorManager.h"
+#include "DisplayManager.h"
+#include "RTCManager.h"
+
 void setup()
 {
+  // Serial Monitor initialisieren
   Serial.begin(115200);
-  Serial.println("Hello World Demo");
+  Serial.println("Start Setup");
+
+  // TempSensor initialisieren
+  tempSensor_init();
+
+
 
   // Hardware + Display initialisieren
   DEV_Module_Init();
@@ -197,24 +207,28 @@ void setup()
   //   DEV_Delay_ms(8000); // 8 Sekunden warten
 
   // Anzeigen
-  Paint_SelectImage(BlackImage);
-  Paint_DrawImage(houseFilled_40x40_bits, 10, 10, houseFilled_40x40_width, houseFilled_40x40_height);
-  EPD_7IN5_V2_Display(BlackImage);
-  DEV_Delay_ms(8000); // 8 Sekunden warten
+  // Paint_SelectImage(BlackImage);
+  // Paint_DrawImage(houseFilled_40x40_bits, 10, 10, houseFilled_40x40_width, houseFilled_40x40_height);
+  // EPD_7IN5_V2_Display(BlackImage);
+  // DEV_Delay_ms(8000); // 8 Sekunden warten
 
-  for (int i = 0; i < 5; i++)
-  {
-    EPD_7IN5_V2_Clear(); // komplett weiß
-    DEV_Delay_ms(2000);
-  }
+  // for (int i = 0; i < 5; i++)
+  // {
+  //   EPD_7IN5_V2_Clear(); // komplett weiß
+  //   DEV_Delay_ms(2000);
+  // }
 
   // Speicher freigeben und schlafen legen
   free(BlackImage);
   EPD_7IN5_V2_Sleep();
+
   Serial.println("Setup done");
 }
 
 void loop()
 {
-  // nichts mehr
+  Serial.print("Temp ");
+  Serial.print(tempSensor_getTemperature());
+  Serial.println("°C");
+  delay(2000);
 }
