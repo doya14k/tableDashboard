@@ -1,3 +1,6 @@
+#ifndef WEATHER_API_MANAGER_H
+#define WEATHER_API_MANAGER_H
+
 // .----------------------------------------.
 // | ___            _           _           |
 // ||_ _|_ __   ___| |_   _  __| | ___  ___ |
@@ -23,3 +26,6 @@
 // -------------------------------------------
 // FUNKTIONSDEKLARATIONEN (globale Schnittstelle)
 // -------------------------------------------
+
+
+#endif // WEATHER_API_MANAGER_H 

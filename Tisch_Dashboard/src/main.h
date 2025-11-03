@@ -1,3 +1,6 @@
+#ifndef MAIN_H
+#define MAIN_H
+
 // .----------------------------------------.
 // | ___            _           _           |
 // ||_ _|_ __   ___| |_   _  __| | ___  ___ |
@@ -12,6 +15,7 @@
 #include "TempSensorManager.h"
 #include "TouchManager.h"
 #include "WeatherAPI_Manager.h"
+#include "TimeAPI_Manager.h"
 
 // .--------------------------------------------.
 // | ____  _             _                ___   |
@@ -94,3 +98,7 @@
 #define OPEN_METEO_WEATHER_API_URL "https://api.open-meteo.com/v1/forecast?latitude=46.8499&longitude=9.5329&daily=weather_code,temperature_2m_max,apparent_temperature_max,temperature_2m_min,apparent_temperature_min,sunshine_duration,sunset,sunrise,daylight_duration,rain_sum,showers_sum,snowfall_sum,precipitation_hours,precipitation_sum,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant,shortwave_radiation_sum,et0_fao_evapotranspiration&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,apparent_temperature,precipitation,rain,snowfall,snow_depth,evapotranspiration,et0_fao_evapotranspiration,vapour_pressure_deficit,weather_code&models=meteoswiss_icon_ch2&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,wind_speed_10m,wind_direction_10m,wind_gusts_10m,weather_code,cloud_cover,pressure_msl,surface_pressure,showers,snowfall,rain,precipitation&timezone=Europe%2FBerlin&forecast_days=7"
 
 #define ZIP "7000" // Chur
+
+String httpGETRequest(const char *serverName);
+
+#endif // MAIN_H

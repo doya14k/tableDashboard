@@ -1,3 +1,6 @@
+#ifndef TEMP_SENSOR_MANAGER_H
+#define TEMP_SENSOR_MANAGER_H
+
 // .----------------------------------------.
 // | ___            _           _           |
 // ||_ _|_ __   ___| |_   _  __| | ___  ___ |
@@ -9,7 +12,9 @@
 // -------------------------------------------
 // INCLUDES
 // -------------------------------------------
-// #include <Arduino.h>     // oder <iostream> für PC-Simulation
+#include <Wire.h>
+#include <Adafruit_BusIO_Register.h>
+#include <Adafruit_I2CDevice.h>
 
 // -------------------------------------------
 // KONSTANTEN & DEFINITIONEN
@@ -27,3 +32,4 @@ void tempSensor_init();
 
 float tempSensor_getTemperature();
 
+#endif // TEMP_SENSOR_MANAGER_H

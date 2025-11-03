@@ -1,3 +1,5 @@
+#ifndef RTC_MANAGER_H
+#define RTC_MANAGER_H
 // .----------------------------------------.
 // | ___            _           _           |
 // ||_ _|_ __   ___| |_   _  __| | ___  ___ |
@@ -6,16 +8,18 @@
 // ||___|_| |_|\___|_|\__,_|\__,_|\___||___/|
 // '----------------------------------------'
 
-
 // -------------------------------------------
 // INCLUDES
 // -------------------------------------------
-// #include <Arduino.h>     // oder <iostream> für PC-Simulation
+#include <Wire.h>
+#include <Adafruit_BusIO_Register.h>
+#include <Adafruit_I2CDevice.h>
+
+#include "TimeAPI_Manager.h"
 
 // -------------------------------------------
 // KONSTANTEN & DEFINITIONEN
 // -------------------------------------------
-// #define MODULE_UPDATE_INTERVAL 60000  // 1 Minute
 
 // -------------------------------------------
 // Variabeln & Datentypen
@@ -24,3 +28,16 @@
 // -------------------------------------------
 // FUNKTIONSDEKLARATIONEN (globale Schnittstelle)
 // -------------------------------------------
+void rtc_init();
+void rtc_updateTime();
+void rtc_printTime();
+
+uint8_t rtc_getSeconds();
+uint8_t rtc_getMinutes();
+uint8_t rtc_getHour();
+uint8_t rtc_getDay();
+uint8_t rtc_getMonth();
+uint16_t rtc_getYear();
+String rtc_getWeekday();
+
+#endif // RTCMANAGER_H

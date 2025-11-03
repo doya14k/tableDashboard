@@ -1,5 +1,5 @@
-#ifndef BUS_API_MANAGER_H
-#define BUS_API_MANAGER_H
+#ifndef TIME_API_MANAGER_H
+#define TIME_API_MANAGER_H
 
 // .----------------------------------------.
 // | ___            _           _           |
@@ -12,20 +12,29 @@
 // -------------------------------------------
 // INCLUDES
 // -------------------------------------------
-// #include <Arduino.h>     // oder <iostream> für PC-Simulation
+#include <Arduino.h>
 
 // -------------------------------------------
 // KONSTANTEN & DEFINITIONEN
 // -------------------------------------------
-// #define MODULE_UPDATE_INTERVAL 60000  // 1 Minute
 
 // -------------------------------------------
 // Variabeln & Datentypen
 // -------------------------------------------
 
+
 // -------------------------------------------
 // FUNKTIONSDEKLARATIONEN (globale Schnittstelle)
 // -------------------------------------------
+void timeAPI_init();
+void timeAPI_updateTime();
+void timeAPI_printTime();
 
+uint16_t timeAPI_getYear();
+uint8_t timeAPI_getMonth();
+uint8_t timeAPI_getDay();
+uint8_t timeAPI_getHour();
+uint8_t timeAPI_getMinutes();
+uint8_t timeAPI_getSeconds();
 
-#endif // BUS_API_MANAGER_H
+#endif // TIME_API_MANAGER_H    

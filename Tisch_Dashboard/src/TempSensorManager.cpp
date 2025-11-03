@@ -5,9 +5,7 @@
 // | | || | | | (__| | |_| | (_| |  __/\__ \|
 // ||___|_| |_|\___|_|\__,_|\__,_|\___||___/|
 // '----------------------------------------'
-#include <Wire.h>
-#include <Adafruit_BusIO_Register.h>
-#include <Adafruit_I2CDevice.h>
+#include "TempSensorManager.h"
 
 // .----------------------------------.
 // | ____        __ _                 |

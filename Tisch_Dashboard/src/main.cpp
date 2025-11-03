@@ -7,11 +7,11 @@
 // // '----------------------------------------'
 
 // #include "main.h"
-// #include <Arduino.h>
+#include <Arduino.h>
 
-// #include <WiFi.h>
-// #include <HTTPClient.h>
-// #include <Arduino_JSON.h>
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include <Arduino_JSON.h>
 
 // // .--------------------------------------------------------------------------.
 // // |  ____ _       _           _  __     __         _       _     _           |
@@ -38,24 +38,24 @@
 // // |                              |___/|_|              |
 // // '----------------------------------------------------'
 
-// String httpGETRequest(const char *serverName)
-// {
-//   HTTPClient http;
-//   http.begin(serverName);
-//   int httpResponseCode = http.GET();
-//   String payload = "{}";
-//   if (httpResponseCode > 0)
-//   {
-//     payload = http.getString();
-//   }
-//   else
-//   {
-//     Serial.print("HTTP GET failed, error: ");
-//     Serial.println(httpResponseCode);
-//   }
-//   http.end();
-//   return payload;
-// }
+String httpGETRequest(const char *serverName)
+{
+  HTTPClient http;
+  http.begin(serverName);
+  int httpResponseCode = http.GET();
+  String payload = "{}";
+  if (httpResponseCode > 0)
+  {
+    payload = http.getString();
+  }
+  else
+  {
+    Serial.print("HTTP GET failed, error: ");
+    Serial.println(httpResponseCode);
+  }
+  http.end();
+  return payload;
+}
 
 // // .----------------------------.
 // // | ____       _               |
@@ -158,43 +158,41 @@
 #include "GUI_Paint.h"
 #include "fonts.h"
 #include <stdlib.h>
-
-#include "TempSensorManager.h"
-#include "DisplayManager.h"
-#include "RTCManager.h"
+#include "main.h"
 
 void setup()
 {
-  // Serial Monitor initialisieren
+  // Serial Monitor initialize
   Serial.begin(115200);
   Serial.println("Start Setup");
 
-  // TempSensor initialisieren
+  // TempSensor initialize
   tempSensor_init();
 
+  // RTC initialize
+  rtc_init();
 
+  // Hardware + Display initialize
+  // DEV_Module_Init();
+  // EPD_7IN5_V2_Init();
+  // EPD_7IN5_V2_Clear();
+  // DEV_Delay_ms(500);
 
-  // Hardware + Display initialisieren
-  DEV_Module_Init();
-  EPD_7IN5_V2_Init();
-  EPD_7IN5_V2_Clear();
-  DEV_Delay_ms(500);
+  // // Picture Storage reserve
+  // UBYTE *BlackImage;
+  // UWORD Imagesize = ((EPD_7IN5_V2_WIDTH % 8 == 0) ? (EPD_7IN5_V2_WIDTH / 8) : (EPD_7IN5_V2_WIDTH / 8 + 1)) * EPD_7IN5_V2_HEIGHT;
+  // BlackImage = (UBYTE *)malloc(Imagesize);
+  // if (BlackImage == NULL)
+  // {
+  //   Serial.println("Memory alloc failed!");
+  //   while (1)
+  //     ;
+  // }
 
-  // Bildspeicher reservieren
-  UBYTE *BlackImage;
-  UWORD Imagesize = ((EPD_7IN5_V2_WIDTH % 8 == 0) ? (EPD_7IN5_V2_WIDTH / 8) : (EPD_7IN5_V2_WIDTH / 8 + 1)) * EPD_7IN5_V2_HEIGHT;
-  BlackImage = (UBYTE *)malloc(Imagesize);
-  if (BlackImage == NULL)
-  {
-    Serial.println("Memory alloc failed!");
-    while (1)
-      ;
-  }
-
-  // Neues Bild erzeugen & weiß füllen
-  Paint_NewImage(BlackImage, EPD_7IN5_V2_WIDTH, EPD_7IN5_V2_HEIGHT, 0, WHITE);
-  Paint_SelectImage(BlackImage);
-  Paint_Clear(WHITE);
+  // // Neues Bild erzeugen & weiß füllen
+  // Paint_NewImage(BlackImage, EPD_7IN5_V2_WIDTH, EPD_7IN5_V2_HEIGHT, 0, WHITE);
+  // Paint_SelectImage(BlackImage);
+  // Paint_Clear(WHITE);
 
   // Text in der Mitte platzieren
   // const char message[] = "23:59 12" "\x7F" "C";
@@ -208,7 +206,7 @@ void setup()
 
   // Anzeigen
   // Paint_SelectImage(BlackImage);
-  // Paint_DrawImage(houseFilled_40x40_bits, 10, 10, houseFilled_40x40_width, houseFilled_40x40_height);
+  // Paint_DrawImage(houseFi888lled_40x40_bits, 10, 10, houseFilled_40x40_width, houseFilled_40x40_height);
   // EPD_7IN5_V2_Display(BlackImage);
   // DEV_Delay_ms(8000); // 8 Sekunden warten
 
@@ -219,8 +217,8 @@ void setup()
   // }
 
   // Speicher freigeben und schlafen legen
-  free(BlackImage);
-  EPD_7IN5_V2_Sleep();
+  // free(BlackImage);
+  // EPD_7IN5_V2_Sleep();
 
   Serial.println("Setup done");
 }
@@ -230,5 +228,10 @@ void loop()
   Serial.print("Temp ");
   Serial.print(tempSensor_getTemperature());
   Serial.println("°C");
-  delay(2000);
+  rtc_updateTime();
+  rtc_printTime();
+
+  Serial.println(rtc_getWeekday());
+
+  delay(500);
 }

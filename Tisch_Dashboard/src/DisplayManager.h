@@ -1,3 +1,5 @@
+#ifndef DISPLAY_MANAGER_H
+#define DISPLAY_MANAGER_H
 // .----------------------------------------.
 // | ___            _           _           |
 // ||_ _|_ __   ___| |_   _  __| | ___  ___ |
@@ -23,3 +25,5 @@
 // -------------------------------------------
 // FUNKTIONSDEKLARATIONEN (globale Schnittstelle)
 // -------------------------------------------
+
+#endif // DISPLAY_MANAGER_H
