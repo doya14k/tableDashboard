@@ -1,5 +1,6 @@
-#ifndef DISPLAY_MANAGER_H
-#define DISPLAY_MANAGER_H
+#ifndef WIFI_MANAGER_H
+#define WIFI_MANAGER_H
+
 // .----------------------------------------.
 // | ___            _           _           |
 // ||_ _|_ __   ___| |_   _  __| | ___  ___ |
@@ -11,18 +12,12 @@
 // -------------------------------------------
 // INCLUDES
 // -------------------------------------------
-#include "DEV_Config.h"
-#include "EPD.h"
-#include "GUI_Paint.h"
-#include "fonts.h"
-#include <stdlib.h>
-#include "RTCManager.h"
-#include "TempSensorManager.h"
+#include <Arduino.h>     // oder <iostream> für PC-Simulation
+
 // -------------------------------------------
 // KONSTANTEN & DEFINITIONEN
 // -------------------------------------------
 // #define MODULE_UPDATE_INTERVAL 60000  // 1 Minute
-#define DEGREE_CHAR 0x7F // Custom degree character code
 
 // -------------------------------------------
 // Variabeln & Datentypen
@@ -31,9 +26,7 @@
 // -------------------------------------------
 // FUNKTIONSDEKLARATIONEN (globale Schnittstelle)
 // -------------------------------------------
+void wifiManager_init();
+String httpGETRequest(const char *serverName);
 
-void displayManager_init();
-void displayManager_updateDisplay();
-void displayManager_refreshDisplay();
-
-#endif // DISPLAY_MANAGER_H
+#endif // WIFI_MANAGER_H

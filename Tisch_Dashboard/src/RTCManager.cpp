@@ -60,7 +60,8 @@ uint8_t rtc_monthByte = 0;
 uint16_t rtc_year = 0;
 uint8_t rtc_yearByte = 0;
 
-String weekDays[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+String weekDays[8] = {" ", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"};
+String englischeWeekDays[8] = {" ", "\"Monday\"", "\"Tuesday\"", "\"Wednesday\"", "\"Thursday\"", "\"Friday\"", "\"Saturday\"", "\"Sunday\""};
 
 // .---------------------------------------------.
 // | _____                 _   _                 |
@@ -85,7 +86,7 @@ void rtc_init()
     rtc_minutes_Reg.write(rtc_minutesByte);
 
     rtc_hours = timeAPI_getHour();
-    uint8_t rtc_hoursByte = ((rtc_hours / 10) << 4) | (rtc_hours % 10) | 0x40; // 24-H Format
+    uint8_t rtc_hoursByte = ((rtc_hours / 10) << 4) | (rtc_hours % 10) & 0b10111111; // 24-H Format
     rtc_hours_Reg.write(rtc_hoursByte);
 
     rtc_date = timeAPI_getDay();
@@ -99,6 +100,16 @@ void rtc_init()
     rtc_year = timeAPI_getYear();
     uint8_t rtc_yearByte = (((rtc_year / 10) % 10) << 4) | (rtc_year % 10);
     rtc_year_Reg.write(rtc_yearByte);
+
+    for (uint8_t i = 1; i <= 8; i++)
+    {
+        if (englischeWeekDays[i] == timeAPI_getWeekday())
+        {
+            rtc_weekday = i;
+            rtc_weekday_Reg.write(rtc_weekday);
+            break;
+        }
+    }
 }
 
 void rtc_updateTime()
@@ -156,5 +167,5 @@ uint16_t rtc_getYear()
 }
 String rtc_getWeekday()
 {
-    return weekDays[rtc_weekday - 1];
+    return weekDays[rtc_weekday];
 }

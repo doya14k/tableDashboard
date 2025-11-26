@@ -18,17 +18,20 @@
 // || |_| |  __/  _| | | | |  __/\__ \|
 // ||____/ \___|_| |_|_| |_|\___||___/|
 // '----------------------------------'
-#define TIME_API_URL "https://aisenseapi.com/services/v1/datetime/0100"
 
-const char *ssid = "brz-63878";
-const char *password = "eqao-25ds-iry4-8imk";
-const char *weatherApiUrl;
+#define USE_TIME_API
+
+#define TIME_API_URL "https://aisenseapi.com/services/v1/datetime/+0100"
+#define WEEKDAY_API_URL "https://api.datesapi.net/today?format=Monday"
 
 String timeAPI_buffer;
+String weekdayApi_buffer;
 
 JSONVar timeAPI_JSON;
+JSONVar weekdayAPI_JSON;
 
 String dateTime;
+String weekday;
 // .---------------------------------------------.
 // | _____                 _   _                 |
 // ||  ___|   _ _ __   ___| |_(_) ___  _ __  ___ |
@@ -39,23 +42,12 @@ String dateTime;
 
 void timeAPI_init()
 {
-    // Wifi initialize
-    WiFi.begin(ssid, password);
-    Serial.print("Connecting");
-    while (WiFi.status() != WL_CONNECTED)
-    {
-        delay(500);
-        Serial.print(".");
-    }
-    Serial.println("");
-    Serial.print("Connected to WiFi network with IP Address: ");
-    Serial.println(WiFi.localIP());
-
     timeAPI_updateTime();
 }
 
 void timeAPI_updateTime()
 {
+#ifdef USE_TIME_API
     if (WiFi.status() == WL_CONNECTED)
     {
         timeAPI_buffer = httpGETRequest(TIME_API_URL);
@@ -63,22 +55,36 @@ void timeAPI_updateTime()
 
         if (JSON.typeof(timeAPI_JSON) == "undefined")
         {
-            Serial.println("Parsing input failed!");
+            Serial.println("Datetime: Parsing input failed!");
             return;
         }
-
         dateTime = JSON.stringify(timeAPI_JSON["datetime"]);
+
+        weekdayApi_buffer = httpGETRequest(WEEKDAY_API_URL);
+        weekdayAPI_JSON = JSON.parse(weekdayApi_buffer);
+        if (JSON.typeof(weekdayAPI_JSON) == "undefined")
+        {
+            Serial.println("Weekday: Parsing input failed!");
+            return;
+        }
+        weekday = JSON.stringify(weekdayAPI_JSON["result"]);
     }
     else
     {
         Serial.println("WiFi Disconnected");
     }
+#else
+    dateTime = "\"2024-10-05T14:30:45Z\"";
+    weekday = "Monday";
+#endif
 }
 
 void timeAPI_printTime()
 {
     Serial.print("Current Time: ");
     Serial.print(timeAPI_JSON["datetime"]);
+    Serial.print(", Weekday: ");
+    Serial.print(weekdayAPI_JSON["result"]);
     Serial.println("");
 }
 
@@ -110,4 +116,9 @@ uint8_t timeAPI_getMinutes()
 uint8_t timeAPI_getSeconds()
 {
     return (uint8_t)((dateTime[18] & 0x0F) * 10) + (dateTime[19] & 0x0F);
+}
+
+String timeAPI_getWeekday()
+{
+    return weekday;
 }

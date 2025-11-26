@@ -36,5 +36,6 @@ uint8_t timeAPI_getDay();
 uint8_t timeAPI_getHour();
 uint8_t timeAPI_getMinutes();
 uint8_t timeAPI_getSeconds();
+String timeAPI_getWeekday();
 
 #endif // TIME_API_MANAGER_H    

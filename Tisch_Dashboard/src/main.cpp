@@ -21,10 +21,6 @@
 // // | \____|_|\___/|_.__/ \__,_|_|    \_/ \__,_|_|  |_|\__,_|_.__/|_|\___||___/|
 // // '--------------------------------------------------------------------------'
 
-// const char *ssid = "brz-63878";
-// const char *password = "eqao-25ds-iry4-8imk";
-// const char *weatherApiUrl;
-
 // // .----------------------------------------------------.
 // // | _____                 _   _                        |
 // // ||  ___|   _ _ __   ___| |_(_) ___  _ __             |
@@ -37,25 +33,6 @@
 // // ||_|   |_|  \___/ \__\___/ \__|\__, | .__/ \___||___/|
 // // |                              |___/|_|              |
 // // '----------------------------------------------------'
-
-String httpGETRequest(const char *serverName)
-{
-  HTTPClient http;
-  http.begin(serverName);
-  int httpResponseCode = http.GET();
-  String payload = "{}";
-  if (httpResponseCode > 0)
-  {
-    payload = http.getString();
-  }
-  else
-  {
-    Serial.print("HTTP GET failed, error: ");
-    Serial.println(httpResponseCode);
-  }
-  http.end();
-  return payload;
-}
 
 // // .----------------------------.
 // // | ____       _               |
@@ -153,10 +130,6 @@ String httpGETRequest(const char *serverName)
 
 // Display example code -----------------------------------------------------------------------------------------------------------------------
 
-#include "DEV_Config.h"
-#include "EPD.h"
-#include "GUI_Paint.h"
-#include "fonts.h"
 #include <stdlib.h>
 #include "main.h"
 
@@ -166,59 +139,30 @@ void setup()
   Serial.begin(115200);
   Serial.println("Start Setup");
 
+  Serial.println("WifiManagerInit started");
+  // Wifi initialize
+  wifiManager_init();
+  Serial.println("WifiManagerInit done");
+
+  Serial.println("TempSensorInit started");
   // TempSensor initialize
   tempSensor_init();
+  Serial.println("TempSensorInit done");
 
+  Serial.println("RTCInit started");
   // RTC initialize
   rtc_init();
+  Serial.println("RTCInit done");
 
-  // Hardware + Display initialize
-  // DEV_Module_Init();
-  // EPD_7IN5_V2_Init();
-  // EPD_7IN5_V2_Clear();
-  // DEV_Delay_ms(500);
+  Serial.println("WeatherAPIInit started");
+  // Weather API initialize
+  weatherAPI_init();
+  Serial.println("WeatherAPIInit done");
 
-  // // Picture Storage reserve
-  // UBYTE *BlackImage;
-  // UWORD Imagesize = ((EPD_7IN5_V2_WIDTH % 8 == 0) ? (EPD_7IN5_V2_WIDTH / 8) : (EPD_7IN5_V2_WIDTH / 8 + 1)) * EPD_7IN5_V2_HEIGHT;
-  // BlackImage = (UBYTE *)malloc(Imagesize);
-  // if (BlackImage == NULL)
-  // {
-  //   Serial.println("Memory alloc failed!");
-  //   while (1)
-  //     ;
-  // }
-
-  // // Neues Bild erzeugen & weiß füllen
-  // Paint_NewImage(BlackImage, EPD_7IN5_V2_WIDTH, EPD_7IN5_V2_HEIGHT, 0, WHITE);
-  // Paint_SelectImage(BlackImage);
-  // Paint_Clear(WHITE);
-
-  // Text in der Mitte platzieren
-  // const char message[] = "23:59 12" "\x7F" "C";
-  //   int textX = (EPD_7IN5_V2_WIDTH - (strlen(message) * OrbitronRegular20.Width)) / 2;
-  //   int textY = (EPD_7IN5_V2_HEIGHT - OrbitronRegular20.Height) / 2;
-  //   Paint_DrawString_EN(textX, textY, message, &OrbitronRegular20, WHITE, BLACK);
-
-  //   // Anzeigen
-  //   EPD_7IN5_V2_Display(BlackImage);
-  //   DEV_Delay_ms(8000); // 8 Sekunden warten
-
-  // Anzeigen
-  // Paint_SelectImage(BlackImage);
-  // Paint_DrawImage(houseFi888lled_40x40_bits, 10, 10, houseFilled_40x40_width, houseFilled_40x40_height);
-  // EPD_7IN5_V2_Display(BlackImage);
-  // DEV_Delay_ms(8000); // 8 Sekunden warten
-
-  // for (int i = 0; i < 5; i++)
-  // {
-  //   EPD_7IN5_V2_Clear(); // komplett weiß
-  //   DEV_Delay_ms(2000);
-  // }
-
-  // Speicher freigeben und schlafen legen
-  // free(BlackImage);
-  // EPD_7IN5_V2_Sleep();
+  Serial.println("DisplayManagerInit started");
+  // Display initialize
+  displayManager_init();
+  Serial.println("DisplayManagerInit done");
 
   Serial.println("Setup done");
 }
@@ -231,7 +175,18 @@ void loop()
   rtc_updateTime();
   rtc_printTime();
 
-  Serial.println(rtc_getWeekday());
+  static uint8_t old_minutes = rtc_getMinutes();
+  static uint8_t new_minutes = rtc_getMinutes();
+
+  new_minutes = rtc_getMinutes();
+  if (old_minutes != new_minutes)
+  {
+    old_minutes = new_minutes;
+    Serial.println("Update Display");
+    // displayManager_refreshDisplay();
+    displayManager_updateDisplay();
+    Serial.println("Update Done");
+  }
 
   delay(500);
 }

@@ -26,6 +26,7 @@
 // -------------------------------------------
 // FUNKTIONSDEKLARATIONEN (globale Schnittstelle)
 // -------------------------------------------
+void weatherAPI_init();
+void weatherAPI_updateWeatherData();
 
-
-#endif // WEATHER_API_MANAGER_H 
+#endif // WEATHER_API_MANAGER_H

@@ -102,6 +102,10 @@ extern "C"
 
   // Orbitron Bold
   extern sFONT OrbitronBold16;
+  extern sFONT OrbitronBold18;
+  extern sFONT OrbitronBold20;
+  extern sFONT OrbitronBold22;
+  extern sFONT OrbitronBold25;
   extern sFONT OrbitronBold40;
   extern sFONT OrbitronBold45;
   extern sFONT OrbitronBold50;
