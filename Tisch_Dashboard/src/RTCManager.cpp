@@ -61,7 +61,8 @@ uint16_t rtc_year = 0;
 uint8_t rtc_yearByte = 0;
 
 String weekDays[8] = {" ", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"};
-String englischeWeekDays[8] = {" ", "\"Monday\"", "\"Tuesday\"", "\"Wednesday\"", "\"Thursday\"", "\"Friday\"", "\"Saturday\"", "\"Sunday\""};
+// String englischeWeekDays[8] = {" ", "\"Monday\"", "\"Tuesday\"", "\"Wednesday\"", "\"Thursday\"", "\"Friday\"", "\"Saturday\"", "\"Sunday\""}; // old JSON format
+String englischeWeekDays[8] = {" ", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"}; // new JSON format
 
 // .---------------------------------------------.
 // | _____                 _   _                 |

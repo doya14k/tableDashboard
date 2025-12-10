@@ -173,7 +173,8 @@ void displayManager_generateTodaysWeather()
 
     // Temperatur jetzt
     char tempNowText[9];
-    sprintf(tempNowText, "%.1f", 4.85);
+
+    sprintf(tempNowText, "%.1f", weatherAPI_getCurrentTemperature());
     for (int i = 0; i < sizeof(tempNowText); i++)
     {
         if (tempNowText[i] == '\0')

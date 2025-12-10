@@ -18,6 +18,8 @@
 #include <stdlib.h>
 #include "RTCManager.h"
 #include "TempSensorManager.h"
+#include "WeatherAPI_Manager.h"
+
 // -------------------------------------------
 // KONSTANTEN & DEFINITIONEN
 // -------------------------------------------

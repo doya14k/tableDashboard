@@ -28,5 +28,6 @@
 // -------------------------------------------
 void weatherAPI_init();
 void weatherAPI_updateWeatherData();
+double weatherAPI_getCurrentTemperature();
 
 #endif // WEATHER_API_MANAGER_H
