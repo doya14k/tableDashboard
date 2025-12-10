@@ -184,6 +184,7 @@ void loop()
   static uint8_t old_minutes = rtc_getMinutes();
   static uint8_t new_minutes = rtc_getMinutes();
 
+  
   new_minutes = rtc_getMinutes();
   if (old_minutes != new_minutes)
   {
