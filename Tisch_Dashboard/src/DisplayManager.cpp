@@ -83,9 +83,13 @@ uint8_t dateTextCharCounter = 0;
 #define TODAYS_WEATHER_NOW_Y (TODAYS_WEATHER_TITLE_Y + TODAYS_WEATHER_TITLE_FONT.Height + 10)
 #define TODAYS_WEATHER_NOW_FONT OrbitronBold20
 
-#define NOW_TEMP_POSITION_X (TODAYS_WEATHER_NOW_X + TODAYS_WEATHER_NOW_FONT.Height)
+#define NOW_TEMP_POSITION_X (TODAYS_WEATHER_NOW_X)
 #define NOW_TEMP_POSITION_Y (TODAYS_WEATHER_NOW_Y + TODAYS_WEATHER_NOW_FONT.Height + 5)
 #define NOW_TEMP_FONT OrbitronBold22
+
+#define NOW_APPARENT_TEMP_POSITION_X (NOW_TEMP_POSITION_X)
+#define NOW_APPARENT_TEMP_POSITION_Y (NOW_TEMP_POSITION_Y + NOW_TEMP_FONT.Height + 5)
+#define NOW_APPARENT_TEMP_FONT OrbitronBold16
 
 // .---------------------------------------------.
 // | _____                 _   _                 |
@@ -203,8 +207,23 @@ void displayManager_generateTodaysWeather()
             break;
         }
     }
-
     Paint_DrawString_EN(NOW_TEMP_POSITION_X, NOW_TEMP_POSITION_Y, tempNowText, &NOW_TEMP_FONT, WHITE, BLACK);
+
+    // Gefühlte Temperatur jetzt
+    char apparentTempNowText[10];
+    sprintf(apparentTempNowText, "(%.1f", weatherAPI_getCurrentApparentTemperature());
+    for (int i = 0; i < sizeof(apparentTempNowText); i++)
+    {
+        if (apparentTempNowText[i] == '\0')
+        {
+            apparentTempNowText[i] = DEGREE_CHAR;
+            apparentTempNowText[i + 1] = 'C';
+            apparentTempNowText[i + 2] = ')';
+            apparentTempNowText[i + 3] = '\0';
+            break;
+        }
+    }
+    Paint_DrawString_EN(NOW_APPARENT_TEMP_POSITION_X, NOW_APPARENT_TEMP_POSITION_Y, apparentTempNowText, &NOW_APPARENT_TEMP_FONT, WHITE, BLACK);
 }
 
 void displayManager_init()
