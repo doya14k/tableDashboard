@@ -224,6 +224,9 @@ void displayManager_generateTodaysWeather()
         }
     }
     Paint_DrawString_EN(NOW_APPARENT_TEMP_POSITION_X, NOW_APPARENT_TEMP_POSITION_Y, apparentTempNowText, &NOW_APPARENT_TEMP_FONT, WHITE, BLACK);
+    // Serial.println("Testing modified DrawChar function for .2 character:");
+    // Paint_DrawString_EN(NOW_APPARENT_TEMP_POSITION_X, NOW_APPARENT_TEMP_POSITION_Y, ".2", &NOW_APPARENT_TEMP_FONT, WHITE, BLACK);
+    // Serial.println("End of test.");
 }
 
 void displayManager_init()
