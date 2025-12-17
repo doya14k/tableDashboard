@@ -21,6 +21,12 @@ static uint8_t weatherPage[(EPD_7IN5_V2_WIDTH / 8) * EPD_7IN5_V2_HEIGHT];
 
 uint8_t dateTextCharCounter = 0;
 
+// Weather API related definitions ----------------------------------------------
+#define TODAY_TIME_INDEX 0
+#define TOMORROW_TIME_INDEX 1
+#define IN_2_DAYS_TIME_INDEX 2
+#define IN_3_DAYS_TIME_INDEX 3
+
 // Outline frame definitions ------------------------------------------------
 #define TEMP_FRAME_START_X 0
 #define TEMP_FRAME_START_Y 0
@@ -57,16 +63,16 @@ uint8_t dateTextCharCounter = 0;
 
 // Temperature and date/time text definitions --------------------------------
 #define TEMP_HOUSE_ICON_X 10 // (DATE_POSITION_X + (TEMP_FONT.Width * 6) + 5)
-#define TEMP_POSITION_X (TEMP_HOUSE_ICON_X + houseFilled_24x24_width + 5)
+#define TEMP_POSITION_X ((TEMP_HOUSE_ICON_X + houseFilled_24x24_width + 5))
 #define TEMP_HOUSE_ICON_Y 2
 #define TEMP_POSITION_Y (TEMP_HOUSE_ICON_Y + 3)
 #define TEMP_FONT OrbitronRegular20
 
-#define TIME_POSITON_X ((DATE_AND_TIME_FRAME_X - (TIME_FONT.Width * 5)) / 2)
+#define TIME_POSITON_X ((DATE_AND_TIME_FRAME_X - (timeTextWidth)) / 2)
 #define TIME_POSITON_Y TEMP_FRAME_END_Y + 10
 #define TIME_FONT OrbitronBold70
 
-#define DATE_POSITION_X ((DATE_AND_TIME_FRAME_X - (DATE_FONT.Width * dateTextCharCounter)) / 2)
+#define DATE_POSITION_X ((DATE_AND_TIME_FRAME_X - (dateTextWidth)) / 2)
 #define DATE_POSITION_Y (TIME_POSITON_Y + OrbitronBold70.Height + 10)
 #define DATE_FONT OrbitronBold22
 
@@ -76,7 +82,7 @@ uint8_t dateTextCharCounter = 0;
 #define TODAYS_WEATHER_TITLE_FONT OrbitronBold25
 
 #define TODAYS_WEATHER_TITLE_UNDERLINE_X_START TODAYS_WEATHER_TITLE_X
-#define TODAYS_WEATHER_TITLE_UNDERLINE_X_END (TODAYS_WEATHER_TITLE_X + (TODAYS_WEATHER_TITLE_FONT.Width * 5) + 10)
+#define TODAYS_WEATHER_TITLE_UNDERLINE_X_END (TODAYS_WEATHER_TITLE_X + (todayTitleTextWidth) + 10)
 #define TODAYS_WEATHER_TITLE_UNDERLINE_Y (TODAYS_WEATHER_TITLE_Y + TODAYS_WEATHER_TITLE_FONT.Height)
 
 #define TODAYS_WEATHER_NOW_X TODAYS_WEATHER_TITLE_X
@@ -90,6 +96,18 @@ uint8_t dateTextCharCounter = 0;
 #define NOW_APPARENT_TEMP_POSITION_X (NOW_TEMP_POSITION_X)
 #define NOW_APPARENT_TEMP_POSITION_Y (NOW_TEMP_POSITION_Y + NOW_TEMP_FONT.Height + 5)
 #define NOW_APPARENT_TEMP_FONT OrbitronBold16
+
+#define TODAY_SUNRISE_ICON_POSITION_X NOW_APPARENT_TEMP_POSITION_X
+#define TODAY_SUNRISE_ICON_POSITION_Y (NOW_APPARENT_TEMP_POSITION_Y + NOW_APPARENT_TEMP_FONT.Height + 5)
+#define TODAY_SUNRISE_FONT OrbitronBold16
+#define TODAY_SUNRISE_POSITION_X (TODAY_SUNRISE_ICON_POSITION_X + sunrise_24x24_width + 10)
+#define TODAY_SUNRISE_POSITION_Y (TODAY_SUNRISE_ICON_POSITION_Y + ((sunrise_24x24_height - TODAY_SUNRISE_FONT.Height) / 2))
+
+#define TODAY_SUNSET_FONT TODAY_SUNRISE_FONT
+#define TODAY_SUNSET_POSITION_X (TODAY_SUNRISE_POSITION_X + sunriseTextWidth + 20)
+#define TODAY_SUNSET_POSITION_Y TODAY_SUNRISE_POSITION_Y
+#define TODAY_SUNSET_ICON_POSITION_X (TODAY_SUNSET_POSITION_X + sunsetTextWidth + 13)
+#define TODAY_SUNSET_ICON_POSITION_Y TODAY_SUNRISE_ICON_POSITION_Y
 
 // .---------------------------------------------.
 // | _____                 _   _                 |
@@ -132,6 +150,8 @@ void displayManager_generateTimeAndDateText()
     Paint_SelectImage(weatherPage);
     char timeText[6];
     sprintf(timeText, "%02d:%02d", rtc_getHour(), rtc_getMinutes());
+    uint16_t timeTextWidth = Get_DrawedStringSize_EN(timeText, &TIME_FONT);
+
     Paint_DrawString_EN(TIME_POSITON_X, TIME_POSITON_Y, timeText, &TIME_FONT, WHITE, BLACK);
 
     char dateText[25];
@@ -149,6 +169,8 @@ void displayManager_generateTimeAndDateText()
             dateTextCharCounter = sizeof(dateText);
         }
     }
+
+    uint16_t dateTextWidth = Get_DrawedStringSize_EN(dateText, &DATE_FONT);
 
     Paint_DrawString_EN(DATE_POSITION_X, DATE_POSITION_Y, dateText, &DATE_FONT, WHITE, BLACK);
 }
@@ -180,12 +202,13 @@ void displayManager_generateHomeTemperature()
     Paint_DrawImage(houseFilled_24x24_bits, TEMP_HOUSE_ICON_X, TEMP_HOUSE_ICON_Y, houseFilled_24x24_width, houseFilled_24x24_height);
 }
 
-void displayManager_generateTodaysWeather()
+void displayManager_generate_TodaysCurrentTemperature()
 {
     Paint_SelectImage(weatherPage);
 
     // Heute Titel mit underline
     char todayTitleText[] = "Heute";
+    uint16_t todayTitleTextWidth = Get_DrawedStringSize_EN(todayTitleText, &TODAYS_WEATHER_TITLE_FONT);
     Paint_DrawString_EN(TODAYS_WEATHER_TITLE_X, TODAYS_WEATHER_TITLE_Y, todayTitleText, &TODAYS_WEATHER_TITLE_FONT, WHITE, BLACK);
     Paint_DrawLine(TODAYS_WEATHER_TITLE_UNDERLINE_X_START, TODAYS_WEATHER_TITLE_UNDERLINE_Y, TODAYS_WEATHER_TITLE_UNDERLINE_X_END, TODAYS_WEATHER_TITLE_UNDERLINE_Y, BLACK, DOT_PIXEL_1X1, LINE_STYLE_SOLID);
 
@@ -227,6 +250,86 @@ void displayManager_generateTodaysWeather()
     // Serial.println("Testing modified DrawChar function for .2 character:");
     // Paint_DrawString_EN(NOW_APPARENT_TEMP_POSITION_X, NOW_APPARENT_TEMP_POSITION_Y, ".2", &NOW_APPARENT_TEMP_FONT, WHITE, BLACK);
     // Serial.println("End of test.");
+}
+
+void displayManager_generateTodaysSunriseAndSunsetTimes()
+{
+    Paint_SelectImage(weatherPage);
+
+    // Sunrise Today
+    char sunriseTodayText[8];
+    sprintf(sunriseTodayText, "%s", weatherAPI_getDailySunriseTime(TODAY_TIME_INDEX).c_str());
+    uint16_t sunriseTextWidth = Get_DrawedStringSize_EN(sunriseTodayText, &TODAY_SUNRISE_FONT);
+
+    Paint_DrawString_EN(TODAY_SUNRISE_POSITION_X, TODAY_SUNRISE_POSITION_Y, sunriseTodayText, &TODAY_SUNRISE_FONT, WHITE, BLACK);
+    Paint_DrawImage(sunrise_24x24_bits, TODAY_SUNRISE_ICON_POSITION_X, TODAY_SUNRISE_ICON_POSITION_Y, sunrise_24x24_width, sunrise_24x24_height);
+
+    // Sunset Today
+    char sunsetTodayText[8];
+    sprintf(sunsetTodayText, "%s", weatherAPI_getDailySunsetTime(TODAY_TIME_INDEX).c_str());
+    uint16_t sunsetTextWidth = Get_DrawedStringSize_EN(sunsetTodayText, &TODAY_SUNSET_FONT);
+
+    Paint_DrawString_EN(TODAY_SUNSET_POSITION_X, TODAY_SUNSET_POSITION_Y, sunsetTodayText, &TODAY_SUNSET_FONT, WHITE, BLACK);
+    Paint_DrawImage(sunset_24x24_bits, TODAY_SUNSET_ICON_POSITION_X, TODAY_SUNSET_ICON_POSITION_Y, sunset_24x24_width, sunset_24x24_height);
+}
+
+void displayManager_generateTodaysMinMaxTemperatures()
+{
+
+#define TODAY_MIN_TEMP_POSITION_X TODAY_SUNRISE_ICON_POSITION_X
+#define TODAY_MIN_TEMP_POSITION_Y (TODAY_SUNRISE_ICON_POSITION_Y + sunrise_24x24_height + 10)
+#define TODAY_MIN_TEMP_FONT OrbitronBold16
+#define TODAY_MIN_TEMP_ICON_POSITION_X (TODAY_MIN_TEMP_POSITION_X + minTempTodayTextWidth + 10)
+#define TODAY_MIN_TEMP_ICON_POSITION_Y (TODAY_MIN_TEMP_POSITION_Y + ((down_arrow_16x16_height - TODAY_MIN_TEMP_FONT.Height) / 2))
+
+    // Todays Min Temperature
+    char minTempTodayText[8];
+    sprintf(minTempTodayText, "%.1f", weatherAPI_getDailyMinTemperature(TODAY_TIME_INDEX));
+
+    for (int i = 0; i < sizeof(minTempTodayText); i++)
+    {
+        if (minTempTodayText[i] == '\0')
+        {
+            minTempTodayText[i] = DEGREE_CHAR;
+            minTempTodayText[i + 1] = 'C';
+            minTempTodayText[i + 2] = '\0';
+            break;
+        }
+    }
+    uint16_t minTempTodayTextWidth = Get_DrawedStringSize_EN(minTempTodayText, &TODAY_MIN_TEMP_FONT);
+    Paint_DrawString_EN(TODAY_MIN_TEMP_POSITION_X, TODAY_MIN_TEMP_POSITION_Y, minTempTodayText, &TODAY_MIN_TEMP_FONT, WHITE, BLACK);
+    Paint_DrawImage(down_arrow_16x16_bits, TODAY_MIN_TEMP_ICON_POSITION_X, TODAY_MIN_TEMP_ICON_POSITION_Y, down_arrow_16x16_width, down_arrow_16x16_height);
+
+#define TODAY_MAX_TEMP_ICON_POSITION_X (TODAY_MIN_TEMP_ICON_POSITION_X + down_arrow_16x16_width + 20)
+#define TODAY_MAX_TEMP_ICON_POSITION_Y (TODAY_MIN_TEMP_ICON_POSITION_Y)
+#define TODAY_MAX_TEMP_POSITION_X (TODAY_MAX_TEMP_ICON_POSITION_X + up_arrow_16x16_width + 10)
+#define TODAY_MAX_TEMP_POSITION_Y (TODAY_MIN_TEMP_POSITION_Y)
+#define TODAY_MAX_TEMP_FONT TODAY_MIN_TEMP_FONT
+
+    // Todays Max Temperature
+    char maxTempTodayText[8];
+    sprintf(maxTempTodayText, "%.1f", weatherAPI_getDailyMaxTemperature(TODAY_TIME_INDEX));
+
+    for (int i = 0; i < sizeof(maxTempTodayText); i++)
+    {
+        if (maxTempTodayText[i] == '\0')
+        {
+            maxTempTodayText[i] = DEGREE_CHAR;
+            maxTempTodayText[i + 1] = 'C';
+            maxTempTodayText[i + 2] = '\0';
+            break;
+        }
+    }
+    Paint_DrawImage(up_arrow_16x16_bits, TODAY_MAX_TEMP_ICON_POSITION_X, TODAY_MAX_TEMP_ICON_POSITION_Y, up_arrow_16x16_width, up_arrow_16x16_height);
+    uint16_t maxTempTodayTextWidth = Get_DrawedStringSize_EN(maxTempTodayText, &TODAY_MIN_TEMP_FONT);
+    Paint_DrawString_EN(TODAY_MAX_TEMP_POSITION_X, TODAY_MAX_TEMP_POSITION_Y, maxTempTodayText, &TODAY_MAX_TEMP_FONT, WHITE, BLACK);
+}
+
+void displayManager_generateTodaysWeather()
+{
+    displayManager_generate_TodaysCurrentTemperature();
+    displayManager_generateTodaysSunriseAndSunsetTimes();
+    displayManager_generateTodaysMinMaxTemperatures();
 }
 
 void displayManager_init()

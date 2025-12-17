@@ -337,26 +337,36 @@ double weatherAPI_getDailyMinTemperature(int dayIndex)
 
 String weatherAPI_getDailySunriseTime(int dayIndex)
 {
+    String sunriseTimeHH_MM = weatherAPI_JSON["daily"]["sunrise"][dayIndex].as<String>();
+
+    uint8_t positionOf_T = weatherAPI_JSON["daily"]["sunrise"][dayIndex].as<String>().indexOf('T');
+    sunriseTimeHH_MM.remove(0, positionOf_T + 1);
+
 #ifdef PRINT_OUT_DATA
     Serial.print("Todays Sunrise Time at dayIndex ");
     Serial.print(dayIndex);
     Serial.print(": ");
-    Serial.print(weatherAPI_JSON["daily"]["sunrise"][dayIndex].as<String>());
+    Serial.print(sunriseTimeHH_MM);
     Serial.println("");
 #endif // PRINT_OUT_DATA
-    return weatherAPI_JSON["daily"]["sunrise"][dayIndex].as<String>();
+    return sunriseTimeHH_MM;
 }
 
 String weatherAPI_getDailySunsetTime(int dayIndex)
 {
+    String sunsetTimeHH_MM = weatherAPI_JSON["daily"]["sunset"][dayIndex].as<String>();
+
+    uint8_t positionOf_T = weatherAPI_JSON["daily"]["sunset"][dayIndex].as<String>().indexOf('T');
+    sunsetTimeHH_MM.remove(0, positionOf_T + 1);
+
 #ifdef PRINT_OUT_DATA
     Serial.print("Todays Sunset Time at dayIndex ");
     Serial.print(dayIndex);
     Serial.print(": ");
-    Serial.print(weatherAPI_JSON["daily"]["sunset"][dayIndex].as<String>());
+    Serial.print(sunsetTimeHH_MM);
     Serial.println("");
 #endif // PRINT_OUT_DATA
-    return weatherAPI_JSON["daily"]["sunset"][dayIndex].as<String>();
+    return sunsetTimeHH_MM;
 }
 
 int weatherAPI_getDailyWeatherCode(int dayIndex)

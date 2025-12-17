@@ -801,6 +801,131 @@ uint16_t Paint_DrawChar_modified(UWORD Xpoint, UWORD Ypoint, const char Acsii_Ch
     return ((ColumnEndright - columnOffsetLeft) + (Font->Width / 3)); // return the width of the character plus 2 pixel space
 }
 
+// .----------------------------------------------------------------------------.
+// |  ____      _       ____                      ____ _                ____  _ |
+// | / ___| ___| |_    |  _ \ _ __ __ ___      __/ ___| |__   __ _ _ __/ ___|(_)|
+// || |  _ / _ \ __|   | | | | '__/ _` \ \ /\ / / |   | '_ \ / _` | '__\___ \| ||
+// || |_| |  __/ |_    | |_| | | | (_| |\ V  V /| |___| | | | (_| | |   ___) | ||
+// | \____|\___|\__|___|____/|_|  \__,_| \_/\_/  \____|_| |_|\__,_|_|  |____/|_||
+// |              |_____|            _ _  __ _          _                       |
+// | _______     _ __ ___   ___   __| (_)/ _(_) ___  __| |                      |
+// ||_  / _ \   | '_ ` _ \ / _ \ / _` | | |_| |/ _ \/ _` |                      |
+// | / /  __/   | | | | | | (_) | (_| | |  _| |  __/ (_| |                      |
+// |/___\___|___|_| |_| |_|\___/ \__,_|_|_| |_|\___|\__,_|                      |
+// |       |_____|                                                              |
+// '----------------------------------------------------------------------------'
+
+uint16_t Get_DrawCharSize_modified(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
+                                   sFONT *Font, UWORD Color_Foreground, UWORD Color_Background)
+{
+    UWORD Page, Column;
+
+    if (Xpoint > Paint.Width || Ypoint > Paint.Height)
+    {
+        Debug("Paint_DrawChar Input exceeds the normal display range\r\n");
+        return 0;
+    }
+
+    uint32_t Char_Offset = (Acsii_Char - ' ') * Font->Height * (Font->Width / 8 + (Font->Width % 8 ? 1 : 0));
+    const unsigned char *ptr = &Font->table[Char_Offset];
+
+    uint16_t columnOffsetLeft = 0;
+    uint16_t ColumnEndright = Font->Width;
+    uint16_t pixelCountInColumn[Font->Width]; // initialize
+
+    for (uint16_t i = 0; i < Font->Width; i++)
+    {
+        pixelCountInColumn[i] = 0;
+    }
+
+    // Check that the character is NOT a space, if so skip modification
+    if (Acsii_Char != ' ')
+    {
+        // check from the left side
+        //  zuerst jede spalte/column von links checken ob leer
+        for (Page = 0; Page < Font->Height; Page++)
+        {
+            for (Column = 0; Column < Font->Width; Column++)
+            {
+
+                // To determine whether the font background color and screen background color is consistent
+                //  0xFF is white background for e-paper
+                if (FONT_BACKGROUND == Color_Background)
+                { // this process is to speed up the scan
+
+                    if (*ptr & (0x80 >> (Column % 8)))
+                        pixelCountInColumn[Column]++;
+                    // Paint_SetPixel(Xpoint + Column, Ypoint + Page, Color_Foreground);
+                    // Paint_DrawPoint(Xpoint + Column, Ypoint + Page, Color_Foreground, DOT_PIXEL_DFT, DOT_STYLE_DFT);
+                }
+                // 0x00 is black background for e-paper
+                else
+                {
+                    if (*ptr & (0x80 >> (Column % 8)))
+                    {
+                        pixelCountInColumn[Column]++;
+                        // Paint_SetPixel(Xpoint + Column, Ypoint + Page, Color_Foreground);
+                        // Paint_DrawPoint(Xpoint + Column, Ypoint + Page, Color_Foreground, DOT_PIXEL_DFT, DOT_STYLE_DFT);
+                    }
+                    else
+                    {
+                        pixelCountInColumn[Column]++;
+                        // Paint_SetPixel(Xpoint + Column, Ypoint + Page, Color_Background);
+                        // Paint_DrawPoint(Xpoint + Column, Ypoint + Page, Color_Background, DOT_PIXEL_DFT, DOT_STYLE_DFT);
+                    }
+                }
+                // One pixel is 8 bits
+                if (Column % 8 == 7)
+                    ptr++;
+            } // Write a line
+            if (Font->Width % 8 != 0)
+                ptr++;
+        } // Write all
+
+        // find out which colums are empty on left and right side
+        for (columnOffsetLeft = 0; columnOffsetLeft < Font->Width; columnOffsetLeft++)
+        {
+            if (pixelCountInColumn[columnOffsetLeft] != 0)
+            {
+                break;
+            }
+        }
+
+        for (int checkerColumnEndright = Font->Width; checkerColumnEndright > 0; checkerColumnEndright--)
+        {
+            if (pixelCountInColumn[checkerColumnEndright - 1] != 0)
+            {
+                // Serial.print("Found right non empty column at ");
+                // Serial.println(checkerColumnEndright);
+                ColumnEndright = checkerColumnEndright; // because loop stops at first non zero
+                break;
+            }
+        }
+
+        // Serial.print("Char '");
+        // Serial.print(Acsii_Char);
+        // Serial.print("' width modified from ");
+        // Serial.print(Font->Width);
+        // Serial.print(" to ");
+        // Serial.print(((ColumnEndright - columnOffsetLeft) + (Font->Width / 8)));
+
+        // Serial.print(" ColumnEndright ");
+        // Serial.print(ColumnEndright);
+
+        // Serial.print(" columnOffsetLeft ");
+        // Serial.println(columnOffsetLeft);
+    }
+    else
+    {
+        columnOffsetLeft = 0;
+        ColumnEndright = Font->Width / 3;
+    }
+
+    Xpoint += Font->Width / 6; //(Font->Width / 8);
+
+    return ((ColumnEndright - columnOffsetLeft) + (Font->Width / 3)); // return the width of the character plus 2 pixel space
+}
+
 /******************************************************************************
 function:	Display the string
 parameter:
@@ -849,6 +974,46 @@ void Paint_DrawString_EN(UWORD Xstart, UWORD Ystart, const char *pString,
         // Idea
         Xpoint += thisChar_Width; // NOTIZ FÜR VERBESSERUNG
     }
+}
+
+uint16_t Get_DrawedStringSize_EN(const char *pString, sFONT *Font)
+{
+    UWORD Xpoint = 0;
+    UWORD Ypoint = 0;
+
+    UWORD Color_Foreground = WHITE;
+    UWORD Color_Background = BLACK;
+
+    uint16_t totalWidth = 0;
+
+    while (*pString != '\0')
+    {
+        // if X direction filled , reposition to(Xstart,Ypoint),Ypoint is Y direction plus the Height of the character
+        if ((Xpoint + Font->Width) > Paint.Width)
+        {
+            Xpoint = 0;
+            Ypoint += Font->Height;
+        }
+
+        // If the Y direction is full, reposition to(Xstart, Ystart)
+        if ((Ypoint + Font->Height) > Paint.Height)
+        {
+            Xpoint = 0;
+            Ypoint = 0;
+        }
+        // Paint_DrawChar(Xpoint, Ypoint, * pString, Font, Color_Background, Color_Foreground); // old variant with same width for each character
+        uint16_t thisChar_Width = Get_DrawCharSize_modified(Xpoint, Ypoint, *pString, Font, Color_Background, Color_Foreground);
+
+        // The next character of the address
+        pString++;
+
+        // The next word of the abscissa increases the font of the broadband
+        // Xpoint += Font->Width;
+        // Idea
+        Xpoint += thisChar_Width; // NOTIZ FÜR VERBESSERUNG
+        totalWidth += thisChar_Width;
+    }
+    return totalWidth;
 }
 
 /******************************************************************************
