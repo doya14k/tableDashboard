@@ -140,6 +140,13 @@ uint8_t dateTextCharCounter = 0;
 #define CURRENT_HUMIDITY_POSITON_Y (CURRENT_CLOUD_COVER_POSITION_Y + cloudCoverIcon_32x32_height + 10)
 #define CURRENT_HUMIDITY_FONT OrbitronBold18
 
+#define CURRENT_WIND_SPEED_FONT OrbitronBold18
+#define CURRENT_WIND_SPEED_ICON_POSITION_X (CURRENT_HUMIDITY_POSITON_X + currentRelativeHumidity_Text_width + 15)
+#define CURRENT_WIND_SPEED_ICON_POSITION_Y (CURRENT_HUMIDITY_POSITON_Y + ((CURRENT_HUMIDITY_FONT.Height - north_16x16_height) / 2))
+
+#define CURRENT_WIND_SPEED_POSITION_X (CURRENT_WIND_SPEED_ICON_POSITION_X + north_16x16_width)
+#define CURRENT_WIND_SPEED_POSITION_Y (CURRENT_HUMIDITY_POSITON_Y + ((CURRENT_HUMIDITY_FONT.Height - CURRENT_WIND_SPEED_FONT.Height) / 2))
+
 // .---------------------------------------------.
 // | _____                 _   _                 |
 // ||  ___|   _ _ __   ___| |_(_) ___  _ __  ___ |
@@ -482,18 +489,11 @@ void displayManager_generateTodaysWindAndHumidity()
             break;
         }
     }
-#define CURRENT_WIND_SPEED_FONT OrbitronBold18
-#define CURRENT_WIND_SPEED_ICON_POSITION_X (CURRENT_HUMIDITY_POSITON_X + currentRelativeHumidity_Text_width + 15)
-#define CURRENT_WIND_SPEED_ICON_POSITION_Y (CURRENT_HUMIDITY_POSITON_Y + ((CURRENT_HUMIDITY_FONT.Height - north_16x16_height) / 2))
-
-#define CURRENT_WIND_SPEED_POSITION_X (CURRENT_WIND_SPEED_ICON_POSITION_X + north_16x16_width)
-#define CURRENT_WIND_SPEED_POSITION_Y (CURRENT_HUMIDITY_POSITON_Y + ((CURRENT_HUMIDITY_FONT.Height - CURRENT_WIND_SPEED_FONT.Height) / 2))
 
     uint16_t currentWindSpeed_Text_width = Get_DrawedStringSize_EN(currentWindSpeed_Text, &CURRENT_WIND_SPEED_FONT);
     Paint_DrawString_EN(CURRENT_WIND_SPEED_POSITION_X, CURRENT_WIND_SPEED_POSITION_Y, currentWindSpeed_Text, &CURRENT_WIND_SPEED_FONT, WHITE, BLACK);
 
     int currentWindDirection = weatherAPI_getCurrentWindDirection();
-    currentWindDirection = 90;
     // von 338 bis 360 und 0 bis 23
     if ((currentWindDirection > 338) || (currentWindDirection <= 23))
     {
