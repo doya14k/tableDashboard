@@ -109,6 +109,37 @@ uint8_t dateTextCharCounter = 0;
 #define TODAY_SUNSET_ICON_POSITION_X (TODAY_SUNSET_POSITION_X + sunsetTextWidth + 13)
 #define TODAY_SUNSET_ICON_POSITION_Y TODAY_SUNRISE_ICON_POSITION_Y
 
+#define TODAY_MIN_TEMP_POSITION_X TODAY_SUNRISE_ICON_POSITION_X
+#define TODAY_MIN_TEMP_POSITION_Y (TODAY_SUNRISE_ICON_POSITION_Y + sunrise_24x24_height + 10)
+#define TODAY_MIN_TEMP_FONT OrbitronBold16
+#define TODAY_MIN_TEMP_ICON_POSITION_X (TODAY_MIN_TEMP_POSITION_X + minTempTodayTextWidth + 10)
+#define TODAY_MIN_TEMP_ICON_POSITION_Y (TODAY_MIN_TEMP_POSITION_Y + ((down_arrow_16x16_height - TODAY_MIN_TEMP_FONT.Height) / 2))
+
+#define TODAY_MAX_TEMP_ICON_POSITION_X (TODAY_MIN_TEMP_ICON_POSITION_X + down_arrow_16x16_width + 25)
+#define TODAY_MAX_TEMP_ICON_POSITION_Y (TODAY_MIN_TEMP_ICON_POSITION_Y)
+#define TODAY_MAX_TEMP_POSITION_X (TODAY_MAX_TEMP_ICON_POSITION_X + up_arrow_16x16_width + 10)
+#define TODAY_MAX_TEMP_POSITION_Y (TODAY_MIN_TEMP_POSITION_Y)
+#define TODAY_MAX_TEMP_FONT TODAY_MIN_TEMP_FONT
+
+#define CURRENT_SNOWFALL_POSITION_X TODAY_MIN_TEMP_POSITION_X
+#define CURRENT_SNOWFALL_POSITION_Y (TODAY_MIN_TEMP_POSITION_Y + TODAY_MIN_TEMP_FONT.Height + 10)
+#define CURRENT_SNOWFALL_FONT OrbitronBold20
+
+#define CURRENT_RAIN_POSITION_X TODAY_MIN_TEMP_POSITION_X
+#define CURRENT_RAIN_POSITION_Y (CURRENT_SNOWFALL_POSITION_Y)
+#define CURRENT_RAIN_FONT CURRENT_SNOWFALL_FONT
+
+#define CURRENT_CLOUD_COVER_FONT OrbitronBold22
+#define CURRENT_CLOUD_COVER_POSITION_X (TODAY_MIN_TEMP_POSITION_X + precipitation_Width + 25)
+#define CURRENT_CLOUD_COVER_POSITION_Y (CURRENT_SNOWFALL_POSITION_Y - ((CURRENT_CLOUD_COVER_FONT.Height - CURRENT_SNOWFALL_FONT.Height) / 2))
+
+#define CURRENT_CLOUD_COVER_ICON_POSITION_X (CURRENT_CLOUD_COVER_POSITION_X + currentCloudCover_text_Width + 10)
+#define CURRENT_CLOUD_COVER_ICON_POSITION_Y (CURRENT_SNOWFALL_POSITION_Y - ((cloudCoverIcon_32x32_height - CURRENT_CLOUD_COVER_FONT.Height) / 2))
+
+#define CURRENT_HUMIDITY_POSITON_X CURRENT_SNOWFALL_POSITION_X
+#define CURRENT_HUMIDITY_POSITON_Y (CURRENT_CLOUD_COVER_POSITION_Y + cloudCoverIcon_32x32_height + 10)
+#define CURRENT_HUMIDITY_FONT OrbitronBold18
+
 // .---------------------------------------------.
 // | _____                 _   _                 |
 // ||  ___|   _ _ __   ___| |_(_) ___  _ __  ___ |
@@ -116,6 +147,14 @@ uint8_t dateTextCharCounter = 0;
 // ||  _|| |_| | | | | (__| |_| | (_) | | | \__ \|
 // ||_|   \__,_|_| |_|\___|\__|_|\___/|_| |_|___/|
 // '---------------------------------------------'
+
+// .-------------------------------------.
+// |  ___        _   _ _                 |
+// | / _ \ _   _| |_| (_)_ __   ___  ___ |
+// || | | | | | | __| | | '_ \ / _ \/ __||
+// || |_| | |_| | |_| | | | | |  __/\__ \|
+// | \___/ \__,_|\__|_|_|_| |_|\___||___/|
+// '-------------------------------------'
 
 void displayManager_drawBoxOutlines()
 {
@@ -144,6 +183,14 @@ void displayManager_drawBoxOutlines()
     // Second out of two lines
     Paint_DrawLine(WEATHER_DAY_TWO_HORIZONTAL_FRAME_START_X, WEATHER_DAY_TWO_HORIZONTAL_FRAME_Y, WEATHER_DAY_TWO_HORIZONTAL_FRAME_END_X, WEATHER_DAY_TWO_HORIZONTAL_FRAME_Y, BLACK, DOT_PIXEL_1X1, LINE_STYLE_SOLID);
 }
+
+// .-------------------------------------------------------.
+// | _____ _                   ___     ____        _       |
+// ||_   _(_)_ __ ___   ___   ( _ )   |  _ \  __ _| |_ ___ |
+// |  | | | | '_ ` _ \ / _ \  / _ \/\ | | | |/ _` | __/ _ \|
+// |  | | | | | | | | |  __/ | (_>  < | |_| | (_| | ||  __/|
+// |  |_| |_|_| |_| |_|\___|  \___/\/ |____/ \__,_|\__\___||
+// '-------------------------------------------------------'
 
 void displayManager_generateTimeAndDateText()
 {
@@ -175,6 +222,15 @@ void displayManager_generateTimeAndDateText()
     Paint_DrawString_EN(DATE_POSITION_X, DATE_POSITION_Y, dateText, &DATE_FONT, WHITE, BLACK);
 }
 
+// .-------------------------------------------------------.
+// | ____                         _____                    |
+// ||  _ \ ___   ___  _ __ ___   |_   _|__ _ __ ___  _ __  |
+// || |_) / _ \ / _ \| '_ ` _ \    | |/ _ \ '_ ` _ \| '_ \ |
+// ||  _ < (_) | (_) | | | | | |   | |  __/ | | | | | |_) ||
+// ||_| \_\___/ \___/|_| |_| |_|   |_|\___|_| |_| |_| .__/ |
+// |                                                |_|    |
+// '-------------------------------------------------------'
+
 void displayManager_generateHomeTemperature()
 {
     Paint_SelectImage(weatherPage);
@@ -201,6 +257,15 @@ void displayManager_generateHomeTemperature()
 
     Paint_DrawImage(houseFilled_24x24_bits, TEMP_HOUSE_ICON_X, TEMP_HOUSE_ICON_Y, houseFilled_24x24_width, houseFilled_24x24_height);
 }
+
+// .-----------------------------.
+// | _____         _             |
+// ||_   _|__   __| | __ _ _   _ |
+// |  | |/ _ \ / _` |/ _` | | | ||
+// |  | | (_) | (_| | (_| | |_| ||
+// |  |_|\___/ \__,_|\__,_|\__, ||
+// |                       |___/ |
+// '-----------------------------'
 
 void displayManager_generate_TodaysCurrentTemperature()
 {
@@ -276,12 +341,6 @@ void displayManager_generateTodaysSunriseAndSunsetTimes()
 void displayManager_generateTodaysMinMaxTemperatures()
 {
 
-#define TODAY_MIN_TEMP_POSITION_X TODAY_SUNRISE_ICON_POSITION_X
-#define TODAY_MIN_TEMP_POSITION_Y (TODAY_SUNRISE_ICON_POSITION_Y + sunrise_24x24_height + 10)
-#define TODAY_MIN_TEMP_FONT OrbitronBold16
-#define TODAY_MIN_TEMP_ICON_POSITION_X (TODAY_MIN_TEMP_POSITION_X + minTempTodayTextWidth + 10)
-#define TODAY_MIN_TEMP_ICON_POSITION_Y (TODAY_MIN_TEMP_POSITION_Y + ((down_arrow_16x16_height - TODAY_MIN_TEMP_FONT.Height) / 2))
-
     // Todays Min Temperature
     char minTempTodayText[8];
     sprintf(minTempTodayText, "%.1f", weatherAPI_getDailyMinTemperature(TODAY_TIME_INDEX));
@@ -299,12 +358,6 @@ void displayManager_generateTodaysMinMaxTemperatures()
     uint16_t minTempTodayTextWidth = Get_DrawedStringSize_EN(minTempTodayText, &TODAY_MIN_TEMP_FONT);
     Paint_DrawString_EN(TODAY_MIN_TEMP_POSITION_X, TODAY_MIN_TEMP_POSITION_Y, minTempTodayText, &TODAY_MIN_TEMP_FONT, WHITE, BLACK);
     Paint_DrawImage(down_arrow_16x16_bits, TODAY_MIN_TEMP_ICON_POSITION_X, TODAY_MIN_TEMP_ICON_POSITION_Y, down_arrow_16x16_width, down_arrow_16x16_height);
-
-#define TODAY_MAX_TEMP_ICON_POSITION_X (TODAY_MIN_TEMP_ICON_POSITION_X + down_arrow_16x16_width + 20)
-#define TODAY_MAX_TEMP_ICON_POSITION_Y (TODAY_MIN_TEMP_ICON_POSITION_Y)
-#define TODAY_MAX_TEMP_POSITION_X (TODAY_MAX_TEMP_ICON_POSITION_X + up_arrow_16x16_width + 10)
-#define TODAY_MAX_TEMP_POSITION_Y (TODAY_MIN_TEMP_POSITION_Y)
-#define TODAY_MAX_TEMP_FONT TODAY_MIN_TEMP_FONT
 
     // Todays Max Temperature
     char maxTempTodayText[8];
@@ -325,12 +378,181 @@ void displayManager_generateTodaysMinMaxTemperatures()
     Paint_DrawString_EN(TODAY_MAX_TEMP_POSITION_X, TODAY_MAX_TEMP_POSITION_Y, maxTempTodayText, &TODAY_MAX_TEMP_FONT, WHITE, BLACK);
 }
 
+void displayManager_generateTodaysPrecipitation_and_CloudCover()
+{
+    double currentSnowfall_cm = weatherAPI_getCurrentSnowfall();
+
+    uint16_t precipitation_Width;
+
+    if (currentSnowfall_cm > 0)
+    // if (1)
+    {
+        // current Snowfall
+        char currentSnowfall_cm_Text[8];
+        sprintf(currentSnowfall_cm_Text, "%.1f", currentSnowfall_cm);
+
+        for (int i = 0; i < sizeof(currentSnowfall_cm_Text); i++)
+        {
+            if (currentSnowfall_cm_Text[i] == '\0')
+            {
+                currentSnowfall_cm_Text[i] = 'c';
+                currentSnowfall_cm_Text[i + 1] = 'm';
+                currentSnowfall_cm_Text[i + 2] = '\0';
+                break;
+            }
+        }
+
+        precipitation_Width = Get_DrawedStringSize_EN(currentSnowfall_cm_Text, &CURRENT_SNOWFALL_FONT);
+        Paint_DrawString_EN(CURRENT_SNOWFALL_POSITION_X, CURRENT_SNOWFALL_POSITION_Y, currentSnowfall_cm_Text, &CURRENT_SNOWFALL_FONT, WHITE, BLACK);
+    }
+    else
+    {
+        // current rain
+        char currentRain_mm_Text[8];
+        sprintf(currentRain_mm_Text, "%.1f", currentSnowfall_cm);
+
+        for (int i = 0; i < sizeof(currentRain_mm_Text); i++)
+        {
+            if (currentRain_mm_Text[i] == '\0')
+            {
+                currentRain_mm_Text[i] = 'm';
+                currentRain_mm_Text[i + 1] = 'm';
+                currentRain_mm_Text[i + 2] = '\0';
+                break;
+            }
+        }
+
+        precipitation_Width = Get_DrawedStringSize_EN(currentRain_mm_Text, &CURRENT_RAIN_FONT);
+        Paint_DrawString_EN(CURRENT_RAIN_POSITION_X, CURRENT_RAIN_POSITION_Y, currentRain_mm_Text, &CURRENT_RAIN_FONT, WHITE, BLACK);
+    }
+
+    // Current Cloud-Cover
+    char currentCloudCover_Text[8];
+    sprintf(currentCloudCover_Text, "%d", weatherAPI_getCurrentCloudCover());
+
+    for (int i = 0; i < sizeof(currentCloudCover_Text); i++)
+    {
+        if (currentCloudCover_Text[i] == '\0')
+        {
+            currentCloudCover_Text[i] = '%';
+            currentCloudCover_Text[i + 1] = '\0';
+            break;
+        }
+    }
+
+    uint16_t currentCloudCover_text_Width = Get_DrawedStringSize_EN(currentCloudCover_Text, &CURRENT_CLOUD_COVER_FONT);
+    Paint_DrawString_EN(CURRENT_CLOUD_COVER_POSITION_X, CURRENT_CLOUD_COVER_POSITION_Y, currentCloudCover_Text, &CURRENT_CLOUD_COVER_FONT, WHITE, BLACK);
+    Paint_DrawImage(cloudCoverIcon_32x32_bits, CURRENT_CLOUD_COVER_ICON_POSITION_X, CURRENT_CLOUD_COVER_ICON_POSITION_Y, cloudCoverIcon_32x32_width, cloudCoverIcon_32x32_height);
+}
+
+void displayManager_generateTodaysWindAndHumidity()
+{
+    // Humidity
+    char currentRelativeHumidity_Text[10];
+    sprintf(currentRelativeHumidity_Text, "%.0f", weatherAPI_getCurrentRelativeHumidity());
+
+    for (int i = 0; i < sizeof(currentRelativeHumidity_Text); i++)
+    {
+        if (currentRelativeHumidity_Text[i] == '\0')
+        {
+            currentRelativeHumidity_Text[i] = '%';
+            currentRelativeHumidity_Text[i + 1] = 'R';
+            currentRelativeHumidity_Text[i + 2] = 'H';
+            currentRelativeHumidity_Text[i + 3] = '\0';
+            break;
+        }
+    }
+
+    uint16_t currentRelativeHumidity_Text_width = Get_DrawedStringSize_EN(currentRelativeHumidity_Text, &CURRENT_HUMIDITY_FONT);
+    Paint_DrawString_EN(CURRENT_HUMIDITY_POSITON_X, CURRENT_HUMIDITY_POSITON_Y, currentRelativeHumidity_Text, &CURRENT_HUMIDITY_FONT, WHITE, BLACK);
+
+    // Wind Direction and speed
+    char currentWindSpeed_Text[12];
+    sprintf(currentWindSpeed_Text, "%.1f", weatherAPI_getCurrentWindSpeed());
+
+    for (int i = 0; i < sizeof(currentWindSpeed_Text); i++)
+    {
+        if (currentWindSpeed_Text[i] == '\0')
+        {
+            currentWindSpeed_Text[i] = 'k';
+            currentWindSpeed_Text[i + 1] = 'm';
+            currentWindSpeed_Text[i + 2] = '/';
+            currentWindSpeed_Text[i + 3] = 'h';
+            currentWindSpeed_Text[i + 4] = '\0';
+            break;
+        }
+    }
+#define CURRENT_WIND_SPEED_FONT OrbitronBold18
+#define CURRENT_WIND_SPEED_ICON_POSITION_X (CURRENT_HUMIDITY_POSITON_X + currentRelativeHumidity_Text_width + 15)
+#define CURRENT_WIND_SPEED_ICON_POSITION_Y (CURRENT_HUMIDITY_POSITON_Y + ((CURRENT_HUMIDITY_FONT.Height - north_16x16_height) / 2))
+
+#define CURRENT_WIND_SPEED_POSITION_X (CURRENT_WIND_SPEED_ICON_POSITION_X + north_16x16_width)
+#define CURRENT_WIND_SPEED_POSITION_Y (CURRENT_HUMIDITY_POSITON_Y + ((CURRENT_HUMIDITY_FONT.Height - CURRENT_WIND_SPEED_FONT.Height) / 2))
+
+    uint16_t currentWindSpeed_Text_width = Get_DrawedStringSize_EN(currentWindSpeed_Text, &CURRENT_WIND_SPEED_FONT);
+    Paint_DrawString_EN(CURRENT_WIND_SPEED_POSITION_X, CURRENT_WIND_SPEED_POSITION_Y, currentWindSpeed_Text, &CURRENT_WIND_SPEED_FONT, WHITE, BLACK);
+
+    int currentWindDirection = weatherAPI_getCurrentWindDirection();
+    currentWindDirection = 90;
+    // von 338 bis 360 und 0 bis 23
+    if ((currentWindDirection > 338) || (currentWindDirection <= 23))
+    {
+        // North
+        Paint_DrawImage(north_16x16_bits, CURRENT_WIND_SPEED_ICON_POSITION_X, CURRENT_WIND_SPEED_ICON_POSITION_Y, north_16x16_width, north_16x16_height);
+    }
+    else if ((currentWindDirection > 23) && (currentWindDirection <= 68))
+    {
+        // North-East
+        Paint_DrawImage(north_east_16x16_bits, CURRENT_WIND_SPEED_ICON_POSITION_X, CURRENT_WIND_SPEED_ICON_POSITION_Y, north_east_16x16_width, north_east_16x16_height);
+    }
+    else if ((currentWindDirection > 68) && (currentWindDirection <= 113))
+    {
+        // East
+        Paint_DrawImage(east_16x16_bits, CURRENT_WIND_SPEED_ICON_POSITION_X, CURRENT_WIND_SPEED_ICON_POSITION_Y, east_16x16_width, east_16x16_height);
+    }
+    else if ((currentWindDirection > 113) && (currentWindDirection <= 158))
+    {
+        // South-East
+        Paint_DrawImage(south_east_16x16_bits, CURRENT_WIND_SPEED_ICON_POSITION_X, CURRENT_WIND_SPEED_ICON_POSITION_Y, south_east_16x16_width, south_east_16x16_height);
+    }
+    else if ((currentWindDirection > 158) && (currentWindDirection <= 203))
+    {
+        // South
+        Paint_DrawImage(south_16x16_bits, CURRENT_WIND_SPEED_ICON_POSITION_X, CURRENT_WIND_SPEED_ICON_POSITION_Y, south_16x16_width, south_16x16_height);
+    }
+    else if ((currentWindDirection > 203) && (currentWindDirection <= 248))
+    {
+        // South-West
+        Paint_DrawImage(south_west_16x16_bits, CURRENT_WIND_SPEED_ICON_POSITION_X, CURRENT_WIND_SPEED_ICON_POSITION_Y, south_west_16x16_width, south_west_16x16_height);
+    }
+    else if ((currentWindDirection > 248) && (currentWindDirection <= 293))
+    {
+        // West
+        Paint_DrawImage(west_16x16_bits, CURRENT_WIND_SPEED_ICON_POSITION_X, CURRENT_WIND_SPEED_ICON_POSITION_Y, west_16x16_width, west_16x16_height);
+    }
+    else if ((currentWindDirection > 293) && (currentWindDirection <= 338))
+    {
+        // North-West
+        Paint_DrawImage(north_west_16x16_bits, CURRENT_WIND_SPEED_ICON_POSITION_X, CURRENT_WIND_SPEED_ICON_POSITION_Y, north_west_16x16_width, north_west_16x16_height);
+    }
+}
+
 void displayManager_generateTodaysWeather()
 {
     displayManager_generate_TodaysCurrentTemperature();
     displayManager_generateTodaysSunriseAndSunsetTimes();
     displayManager_generateTodaysMinMaxTemperatures();
+    displayManager_generateTodaysPrecipitation_and_CloudCover();
+    displayManager_generateTodaysWindAndHumidity();
 }
+
+// .-----------------.
+// | ___       _ _   |
+// ||_ _|_ __ (_) |_ |
+// | | || '_ \| | __||
+// | | || | | | | |_ |
+// ||___|_| |_|_|\__||
+// '-----------------'
 
 void displayManager_init()
 {
@@ -368,6 +590,15 @@ void displayManager_init()
     // free(weatherPage);
     // EPD_7IN5_V2_Sleep();
 }
+
+// .-----------------------------------------------------------------.
+// |                 _       _       ____  _           _             |
+// | _   _ _ __   __| | __ _| |_ ___|  _ \(_)___ _ __ | | __ _ _   _ |
+// || | | | '_ \ / _` |/ _` | __/ _ \ | | | / __| '_ \| |/ _` | | | ||
+// || |_| | |_) | (_| | (_| | ||  __/ |_| | \__ \ |_) | | (_| | |_| ||
+// | \__,_| .__/ \__,_|\__,_|\__\___|____/|_|___/ .__/|_|\__,_|\__, ||
+// |      |_|                                   |_|            |___/ |
+// '-----------------------------------------------------------------'
 
 void displayManager_updateDisplay()
 {

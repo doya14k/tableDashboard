@@ -86,6 +86,11 @@
 #include "icons_images/sun_rise_set_24x24.c"
 #include "icons_images/temperatureHighLow_24x24.c"
 #include "icons_images/temperatureHighLow_16x16.c"
+#include "icons_images/kompass_24x24.c"
+#include "icons_images/kompass_32x32.c"
+#include "icons_images/kompass_16x16.c"
+#include "icons_images/cloudCoverIcon_24x24.c"
+#include "icons_images/cloudCoverIcon_32x32.c"
 
 /**
  * Image attributes
