@@ -44,6 +44,7 @@ double weatherAPI_getCurrentSnowfall();
 double weatherAPI_getCurrentPrecipitation();
 
 // Hourly Getter Funktionen
+String weatherAPI_getHourlyTime_HH_MM(int hourIndex);
 double weatherAPI_getHourlyTemperature(int hourIndex);
 double weatherAPI_getHourlyApparentTemperature(int hourIndex);
 int weatherAPI_getHourlyWeatherCode(int hourIndex);

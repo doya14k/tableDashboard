@@ -27,6 +27,8 @@ uint8_t dateTextCharCounter = 0;
 #define IN_2_DAYS_TIME_INDEX 2
 #define IN_3_DAYS_TIME_INDEX 3
 
+#define TIME_INCREMENT_HOURLY_FORECAST 3
+
 // Outline frame definitions ------------------------------------------------
 #define TEMP_FRAME_START_X 0
 #define TEMP_FRAME_START_Y 0
@@ -60,6 +62,10 @@ uint8_t dateTextCharCounter = 0;
 #define WEATHER_DAY_TWO_HORIZONTAL_FRAME_START_X (TODAYS_WEATHER_FRAME_X)
 #define WEATHER_DAY_TWO_HORIZONTAL_FRAME_END_X (EPD_7IN5_V2_WIDTH)
 #define WEATHER_DAY_TWO_HORIZONTAL_FRAME_Y (((EPD_7IN5_V2_HEIGHT - WEATHER_ONE_DAY_FRAME_START_Y) * 2) / 3) + WEATHER_ONE_DAY_FRAME_START_Y
+
+#define HOURLY_SEPERATOR_POSITION_START_Y (DATE_AND_TIME_FRAME_Y + 20)
+#define HOURLY_SEPERATOR_POSITION_END_Y (EPD_7IN5_V2_HEIGHT - 20)
+#define HOURLY_SEPERATOR_POSITION_X (((TODAYS_WEATHER_FRAME_X) * 25) / 44)
 
 // Temperature and date/time text definitions --------------------------------
 #define TEMP_HOUSE_ICON_X 10 // (DATE_POSITION_X + (TEMP_FONT.Width * 6) + 5)
@@ -98,7 +104,7 @@ uint8_t dateTextCharCounter = 0;
 #define NOW_APPARENT_TEMP_FONT OrbitronBold16
 
 #define TODAY_SUNRISE_ICON_POSITION_X NOW_APPARENT_TEMP_POSITION_X
-#define TODAY_SUNRISE_ICON_POSITION_Y (NOW_APPARENT_TEMP_POSITION_Y + NOW_APPARENT_TEMP_FONT.Height + 5)
+#define TODAY_SUNRISE_ICON_POSITION_Y (TODAY_MIN_TEMP_POSITION_Y + TODAY_MIN_TEMP_FONT.Height + 10) // (NOW_APPARENT_TEMP_POSITION_Y + NOW_APPARENT_TEMP_FONT.Height + 5)
 #define TODAY_SUNRISE_FONT OrbitronBold16
 #define TODAY_SUNRISE_POSITION_X (TODAY_SUNRISE_ICON_POSITION_X + sunrise_24x24_width + 10)
 #define TODAY_SUNRISE_POSITION_Y (TODAY_SUNRISE_ICON_POSITION_Y + ((sunrise_24x24_height - TODAY_SUNRISE_FONT.Height) / 2))
@@ -110,7 +116,7 @@ uint8_t dateTextCharCounter = 0;
 #define TODAY_SUNSET_ICON_POSITION_Y TODAY_SUNRISE_ICON_POSITION_Y
 
 #define TODAY_MIN_TEMP_POSITION_X TODAY_SUNRISE_ICON_POSITION_X
-#define TODAY_MIN_TEMP_POSITION_Y (TODAY_SUNRISE_ICON_POSITION_Y + sunrise_24x24_height + 10)
+#define TODAY_MIN_TEMP_POSITION_Y (NOW_APPARENT_TEMP_POSITION_Y + NOW_APPARENT_TEMP_FONT.Height + 5) // (TODAY_SUNRISE_ICON_POSITION_Y + sunrise_24x24_height + 10)
 #define TODAY_MIN_TEMP_FONT OrbitronBold16
 #define TODAY_MIN_TEMP_ICON_POSITION_X (TODAY_MIN_TEMP_POSITION_X + minTempTodayTextWidth + 10)
 #define TODAY_MIN_TEMP_ICON_POSITION_Y (TODAY_MIN_TEMP_POSITION_Y + ((down_arrow_16x16_height - TODAY_MIN_TEMP_FONT.Height) / 2))
@@ -122,7 +128,7 @@ uint8_t dateTextCharCounter = 0;
 #define TODAY_MAX_TEMP_FONT TODAY_MIN_TEMP_FONT
 
 #define CURRENT_SNOWFALL_POSITION_X TODAY_MIN_TEMP_POSITION_X
-#define CURRENT_SNOWFALL_POSITION_Y (TODAY_MIN_TEMP_POSITION_Y + TODAY_MIN_TEMP_FONT.Height + 10)
+#define CURRENT_SNOWFALL_POSITION_Y (TODAY_SUNRISE_ICON_POSITION_Y + sunrise_24x24_height + 10) // (TODAY_MIN_TEMP_POSITION_Y + TODAY_MIN_TEMP_FONT.Height + 10)
 #define CURRENT_SNOWFALL_FONT OrbitronBold20
 
 #define CURRENT_RAIN_POSITION_X TODAY_MIN_TEMP_POSITION_X
@@ -146,6 +152,35 @@ uint8_t dateTextCharCounter = 0;
 
 #define CURRENT_WIND_SPEED_POSITION_X (CURRENT_WIND_SPEED_ICON_POSITION_X + north_16x16_width)
 #define CURRENT_WIND_SPEED_POSITION_Y (CURRENT_HUMIDITY_POSITON_Y + ((CURRENT_HUMIDITY_FONT.Height - CURRENT_WIND_SPEED_FONT.Height) / 2))
+
+#define HOURLY_FORECAST_TIME_TEXT_POSITION_X startPosition_X
+#define HOURLY_FORECAST_TIME_TEXT_POSITION_Y startPosition_Y
+#define HOURLY_FORECAST_TIME_TEXT_FONT OrbitronBold18
+
+#define HOURLY_FORECAST_TIME_TEXT_UNDERLINE_START_X HOURLY_FORECAST_TIME_TEXT_POSITION_X
+#define HOURLY_FORECAST_TIME_TEXT_UNDERLINE_END_X (HOURLY_FORECAST_TIME_TEXT_POSITION_X + hourlyForecastTimeText_Width)
+#define HOURLY_FORECAST_TIME_TEXT_UNDERLINE_Y (HOURLY_FORECAST_TIME_TEXT_POSITION_Y + HOURLY_FORECAST_TIME_TEXT_FONT.Height + 1)
+
+#define HOURLY_FORECAST_TEMPERATURE_X (HOURLY_FORECAST_TIME_TEXT_UNDERLINE_START_X)
+#define HOURLY_FORECAST_TEMPERATURE_Y (HOURLY_FORECAST_TIME_TEXT_UNDERLINE_Y + 15)
+#define HOURLY_FORECAST_FONT OrbitronBold20
+
+#define HOURLY_FORECAST_APPARENT_FONT OrbitronBold16
+#define HOURLY_FORECAST_APPARENT_TEMPERATURE_X (HOURLY_FORECAST_TEMPERATURE_X + hourlyTempTextWidth + 10)
+#define HOURLY_FORECAST_APPARENT_TEMPERATURE_Y (HOURLY_FORECAST_TEMPERATURE_Y + (HOURLY_FORECAST_FONT.Height - HOURLY_FORECAST_APPARENT_FONT.Height))
+
+#define HOURLY_FORECAST_3_HOURS_POSITION_X (HOURLY_SEPERATOR_POSITION_X + 10)
+#define HOURLY_FORECAST_3_HOURS_POSITION_Y (HOURLY_SEPERATOR_POSITION_START_Y + 5)
+#define HOURLY_FORECAST_6_HOURS_POSITION_X HOURLY_FORECAST_3_HOURS_POSITION_X
+#define HOURLY_FORECAST_6_HOURS_POSITION_Y (HOURLY_SEPERATOR_POSITION_START_Y + 140)
+
+#define HOURLY_SNOWFALL_POSITION_X (HOURLY_FORECAST_TEMPERATURE_X)
+#define HOURLY_SNOWFALL_POSITION_Y (HOURLY_FORECAST_TEMPERATURE_Y + HOURLY_FORECAST_TIME_TEXT_FONT.Height + 20)
+#define HOURLY_SNOWFALL_FONT OrbitronBold18
+
+#define HOURLY_RAIN_POSITION_X HOURLY_SNOWFALL_POSITION_X
+#define HOURLY_RAIN_POSITION_Y HOURLY_SNOWFALL_POSITION_Y
+#define HOURLY_RAIN_FONT HOURLY_SNOWFALL_FONT
 
 // .---------------------------------------------.
 // | _____                 _   _                 |
@@ -189,6 +224,9 @@ void displayManager_drawBoxOutlines()
     Paint_DrawLine(WEATHER_DAY_ONE_HORIZONTAL_FRAME_START_X, WEATHER_DAY_ONE_HORIZONTAL_FRAME_Y, WEATHER_DAY_ONE_HORIZONTAL_FRAME_END_X, WEATHER_DAY_ONE_HORIZONTAL_FRAME_Y, BLACK, DOT_PIXEL_1X1, LINE_STYLE_SOLID);
     // Second out of two lines
     Paint_DrawLine(WEATHER_DAY_TWO_HORIZONTAL_FRAME_START_X, WEATHER_DAY_TWO_HORIZONTAL_FRAME_Y, WEATHER_DAY_TWO_HORIZONTAL_FRAME_END_X, WEATHER_DAY_TWO_HORIZONTAL_FRAME_Y, BLACK, DOT_PIXEL_1X1, LINE_STYLE_SOLID);
+
+    // Line between hourly and current forecast:
+    Paint_DrawLine(HOURLY_SEPERATOR_POSITION_X, HOURLY_SEPERATOR_POSITION_START_Y, HOURLY_SEPERATOR_POSITION_X, HOURLY_SEPERATOR_POSITION_END_Y, BLACK, DOT_PIXEL_1X1, LINE_STYLE_SOLID);
 }
 
 // .-------------------------------------------------------.
@@ -330,7 +368,7 @@ void displayManager_generateTodaysSunriseAndSunsetTimes()
 
     // Sunrise Today
     char sunriseTodayText[8];
-    sprintf(sunriseTodayText, "%s", weatherAPI_getDailySunriseTime(TODAY_TIME_INDEX).c_str());
+    sprintf(sunriseTodayText, "%s", weatherAPI_getDailySunriseTime(TODAY_TIME_INDEX));
     uint16_t sunriseTextWidth = Get_DrawedStringSize_EN(sunriseTodayText, &TODAY_SUNRISE_FONT);
 
     Paint_DrawString_EN(TODAY_SUNRISE_POSITION_X, TODAY_SUNRISE_POSITION_Y, sunriseTodayText, &TODAY_SUNRISE_FONT, WHITE, BLACK);
@@ -338,7 +376,7 @@ void displayManager_generateTodaysSunriseAndSunsetTimes()
 
     // Sunset Today
     char sunsetTodayText[8];
-    sprintf(sunsetTodayText, "%s", weatherAPI_getDailySunsetTime(TODAY_TIME_INDEX).c_str());
+    sprintf(sunsetTodayText, "%s", weatherAPI_getDailySunsetTime(TODAY_TIME_INDEX));
     uint16_t sunsetTextWidth = Get_DrawedStringSize_EN(sunsetTodayText, &TODAY_SUNSET_FONT);
 
     Paint_DrawString_EN(TODAY_SUNSET_POSITION_X, TODAY_SUNSET_POSITION_Y, sunsetTodayText, &TODAY_SUNSET_FONT, WHITE, BLACK);
@@ -416,7 +454,7 @@ void displayManager_generateTodaysPrecipitation_and_CloudCover()
     {
         // current rain
         char currentRain_mm_Text[8];
-        sprintf(currentRain_mm_Text, "%.1f", currentSnowfall_cm);
+        sprintf(currentRain_mm_Text, "%.1f", weatherAPI_getCurrentRain());
 
         for (int i = 0; i < sizeof(currentRain_mm_Text); i++)
         {
@@ -537,6 +575,101 @@ void displayManager_generateTodaysWindAndHumidity()
     }
 }
 
+void displayManager_generateTodaysWeatherHourlyForecastWindow(int hourIndex, uint16_t startPosition_X, uint16_t startPosition_Y)
+{
+    // Current Cloud-Cover
+    char hourlyForecastTimeText[10];
+    sprintf(hourlyForecastTimeText, "%s", weatherAPI_getHourlyTime_HH_MM(hourIndex));
+
+    uint16_t hourlyForecastTimeText_Width = Get_DrawedStringSize_EN(hourlyForecastTimeText, &HOURLY_FORECAST_TIME_TEXT_FONT);
+    Paint_DrawString_EN(HOURLY_FORECAST_TIME_TEXT_POSITION_X, HOURLY_FORECAST_TIME_TEXT_POSITION_Y, hourlyForecastTimeText, &HOURLY_FORECAST_TIME_TEXT_FONT, WHITE, BLACK);
+    Paint_DrawLine(HOURLY_FORECAST_TIME_TEXT_UNDERLINE_START_X, HOURLY_FORECAST_TIME_TEXT_UNDERLINE_Y, HOURLY_FORECAST_TIME_TEXT_UNDERLINE_END_X, HOURLY_FORECAST_TIME_TEXT_UNDERLINE_Y, BLACK, DOT_PIXEL_1X1, LINE_STYLE_SOLID);
+
+    // Hourly Temp
+    char hourlyTempText[9];
+    sprintf(hourlyTempText, "%.1f", weatherAPI_getHourlyTemperature(hourIndex));
+
+    for (int i = 0; i < sizeof(hourlyTempText); i++)
+    {
+        if (hourlyTempText[i] == '\0')
+        {
+            hourlyTempText[i] = DEGREE_CHAR;
+            hourlyTempText[i + 1] = 'C';
+            hourlyTempText[i + 2] = '\0';
+            break;
+        }
+    }
+
+    uint16_t hourlyTempTextWidth = Get_DrawedStringSize_EN(hourlyTempText, &HOURLY_FORECAST_FONT);
+    Paint_DrawString_EN(HOURLY_FORECAST_TEMPERATURE_X, HOURLY_FORECAST_TEMPERATURE_Y, hourlyTempText, &HOURLY_FORECAST_FONT, WHITE, BLACK);
+
+    // Hourly apparent Temp
+    char hourlyApparentTempText[9];
+    sprintf(hourlyApparentTempText, "(%.1f", weatherAPI_getHourlyApparentTemperature(hourIndex));
+
+    for (int i = 0; i < sizeof(hourlyApparentTempText); i++)
+    {
+        if (hourlyApparentTempText[i] == '\0')
+        {
+            hourlyApparentTempText[i] = DEGREE_CHAR;
+            hourlyApparentTempText[i + 1] = 'C';
+            hourlyApparentTempText[i + 2] = ')';
+            hourlyApparentTempText[i + 3] = '\0';
+            break;
+        }
+    }
+
+    uint16_t hourlyApparentTempTextWidth = Get_DrawedStringSize_EN(hourlyApparentTempText, &HOURLY_FORECAST_APPARENT_FONT);
+    Paint_DrawString_EN(HOURLY_FORECAST_APPARENT_TEMPERATURE_X, HOURLY_FORECAST_APPARENT_TEMPERATURE_Y, hourlyApparentTempText, &HOURLY_FORECAST_APPARENT_FONT, WHITE, BLACK);
+
+    // hourly precipitation
+    double hourlySnowfall_cm = weatherAPI_getHourlySnowfall(hourIndex);
+
+    uint16_t precipitation_Width;
+
+    if (hourlySnowfall_cm > 0)
+    // if (1)
+    {
+        // hourly Snowfall
+        char hourlySnowfall_cm_Text[8];
+        sprintf(hourlySnowfall_cm_Text, "%.1f", hourlySnowfall_cm);
+
+        for (int i = 0; i < sizeof(hourlySnowfall_cm_Text); i++)
+        {
+            if (hourlySnowfall_cm_Text[i] == '\0')
+            {
+                hourlySnowfall_cm_Text[i] = 'c';
+                hourlySnowfall_cm_Text[i + 1] = 'm';
+                hourlySnowfall_cm_Text[i + 2] = '\0';
+                break;
+            }
+        }
+
+        precipitation_Width = Get_DrawedStringSize_EN(hourlySnowfall_cm_Text, &HOURLY_SNOWFALL_FONT);
+        Paint_DrawString_EN(HOURLY_SNOWFALL_POSITION_X, HOURLY_SNOWFALL_POSITION_Y, hourlySnowfall_cm_Text, &HOURLY_SNOWFALL_FONT, WHITE, BLACK);
+    }
+    else
+    {
+        // current rain
+        char hourlyRain_mm_Text[8];
+        sprintf(hourlyRain_mm_Text, "%.1f", weatherAPI_getHourlyRain(hourIndex));
+
+        for (int i = 0; i < sizeof(hourlyRain_mm_Text); i++)
+        {
+            if (hourlyRain_mm_Text[i] == '\0')
+            {
+                hourlyRain_mm_Text[i] = 'm';
+                hourlyRain_mm_Text[i + 1] = 'm';
+                hourlyRain_mm_Text[i + 2] = '\0';
+                break;
+            }
+        }
+
+        precipitation_Width = Get_DrawedStringSize_EN(hourlyRain_mm_Text, &HOURLY_RAIN_FONT);
+        Paint_DrawString_EN(HOURLY_RAIN_POSITION_X, HOURLY_RAIN_POSITION_Y, hourlyRain_mm_Text, &HOURLY_RAIN_FONT, WHITE, BLACK);
+    }
+}
+
 void displayManager_generateTodaysWeather()
 {
     displayManager_generate_TodaysCurrentTemperature();
@@ -544,6 +677,9 @@ void displayManager_generateTodaysWeather()
     displayManager_generateTodaysMinMaxTemperatures();
     displayManager_generateTodaysPrecipitation_and_CloudCover();
     displayManager_generateTodaysWindAndHumidity();
+
+    displayManager_generateTodaysWeatherHourlyForecastWindow((rtc_getHour() + TIME_INCREMENT_HOURLY_FORECAST), HOURLY_FORECAST_3_HOURS_POSITION_X, HOURLY_FORECAST_3_HOURS_POSITION_Y);
+    displayManager_generateTodaysWeatherHourlyForecastWindow((rtc_getHour() + TIME_INCREMENT_HOURLY_FORECAST + TIME_INCREMENT_HOURLY_FORECAST), HOURLY_FORECAST_6_HOURS_POSITION_X, HOURLY_FORECAST_6_HOURS_POSITION_Y);
 }
 
 // .-----------------.

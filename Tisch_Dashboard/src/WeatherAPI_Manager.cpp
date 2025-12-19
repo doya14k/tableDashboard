@@ -215,6 +215,23 @@ double weatherAPI_getCurrentPrecipitation()
 // ||____/ \__,_|\__\__,_|                                                    |
 // '--------------------------------------------------------------------------'
 
+String weatherAPI_getHourlyTime_HH_MM(int hourIndex)
+{
+    String hourlyTimeHH_MM = weatherAPI_JSON["hourly"]["time"][hourIndex].as<String>();
+
+    uint8_t positionOf_T = weatherAPI_JSON["hourly"]["time"][hourIndex].as<String>().indexOf('T');
+    hourlyTimeHH_MM.remove(0, positionOf_T + 1);
+
+#ifdef PRINT_OUT_DATA
+    Serial.print("Time at hourIndex ");
+    Serial.print(hourIndex);
+    Serial.print(": ");
+    Serial.print(hourlyTimeHH_MM);
+    Serial.println("");
+#endif // PRINT_OUT_DATA
+    return hourlyTimeHH_MM.c_str();
+}
+
 double weatherAPI_getHourlyTemperature(int hourIndex)
 {
 #ifdef PRINT_OUT_DATA
@@ -349,7 +366,7 @@ String weatherAPI_getDailySunriseTime(int dayIndex)
     Serial.print(sunriseTimeHH_MM);
     Serial.println("");
 #endif // PRINT_OUT_DATA
-    return sunriseTimeHH_MM;
+    return sunriseTimeHH_MM.c_str();
 }
 
 String weatherAPI_getDailySunsetTime(int dayIndex)
@@ -366,7 +383,7 @@ String weatherAPI_getDailySunsetTime(int dayIndex)
     Serial.print(sunsetTimeHH_MM);
     Serial.println("");
 #endif // PRINT_OUT_DATA
-    return sunsetTimeHH_MM;
+    return sunsetTimeHH_MM.c_str();
 }
 
 int weatherAPI_getDailyWeatherCode(int dayIndex)
