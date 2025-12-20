@@ -39,5 +39,6 @@ uint8_t rtc_getDay();
 uint8_t rtc_getMonth();
 uint16_t rtc_getYear();
 String rtc_getWeekday();
+uint8_t rtc_getWeekdayIndex();
 
 #endif // RTCMANAGER_H

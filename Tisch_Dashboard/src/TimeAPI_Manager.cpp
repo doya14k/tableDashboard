@@ -26,7 +26,7 @@
 #define WEEKDAY_API_URL "https://api.datesapi.net/today?format=Monday"
 
 #define DATETIME_EXAMPLE "\"2024-10-05T14:30:45Z\""
-#define WEEKDAY_EXAMPLE "\"Monday\""
+#define WEEKDAY_EXAMPLE "Monday"
 
 String timeAPI_buffer;
 String weekdayApi_buffer;

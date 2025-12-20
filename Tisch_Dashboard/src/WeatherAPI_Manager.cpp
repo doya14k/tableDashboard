@@ -433,3 +433,15 @@ double weatherApi_getDailySnowfallSum(int dayIndex)
 #endif // PRINT_OUT_DATA
     return weatherAPI_JSON["daily"]["snowfall_sum"][dayIndex].as<double>();
 }
+
+double weatherApi_getDailyDaylightDuration(int dayIndex)
+{
+#ifdef PRINT_OUT_DATA
+    Serial.print("Todays Daylight-Duration at dayIndex ");
+    Serial.print(dayIndex);
+    Serial.print(": ");
+    Serial.print(weatherAPI_JSON["daily"]["daylight_duration"][dayIndex].as<String>());
+    Serial.println("s");
+#endif // PRINT_OUT_DATA
+    return weatherAPI_JSON["daily"]["daylight_duration"][dayIndex].as<double>();
+}

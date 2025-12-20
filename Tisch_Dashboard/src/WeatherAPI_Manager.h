@@ -62,5 +62,6 @@ int weatherAPI_getDailyWeatherCode(int dayIndex);
 double weatherAPI_getDailyPrecipitationSum(int dayIndex);
 double weatherAPI_getDailyRainSum(int dayIndex);
 double weatherApi_getDailySnowfallSum(int dayIndex);
+double weatherApi_getDailyDaylightDuration(int dayIndex);
 
 #endif // WEATHER_API_MANAGER_H

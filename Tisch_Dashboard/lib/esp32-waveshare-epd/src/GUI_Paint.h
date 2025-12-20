@@ -91,7 +91,8 @@
 #include "icons_images/kompass_16x16.c"
 #include "icons_images/cloudCoverIcon_24x24.c"
 #include "icons_images/cloudCoverIcon_32x32.c"
-
+#include "icons_images/daylight_24x24.c"
+#include "icons_images/daylight_16x16.c"
 /**
  * Image attributes
  **/

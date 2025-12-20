@@ -170,3 +170,8 @@ String rtc_getWeekday()
 {
     return weekDays[rtc_weekday];
 }
+
+uint8_t rtc_getWeekdayIndex()
+{
+    return rtc_weekday;
+}

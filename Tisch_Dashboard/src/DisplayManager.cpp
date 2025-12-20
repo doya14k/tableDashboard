@@ -7,6 +7,7 @@
 // '----------------------------------------'
 
 #include "DisplayManager.h"
+#include "RTCManager.h"
 #include <stdio.h>
 
 // .----------------------------------.
@@ -29,6 +30,10 @@ uint8_t dateTextCharCounter = 0;
 
 #define TIME_INCREMENT_HOURLY_FORECAST 3
 
+String weekDaysDisplay[8] = {" ", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"};
+// String englischeweekDaysDisplay[8] = {" ", "\"Monday\"", "\"Tuesday\"", "\"Wednesday\"", "\"Thursday\"", "\"Friday\"", "\"Saturday\"", "\"Sunday\""}; // old JSON format
+String englischeWeekDaysDisplay[8] = {" ", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"}; // new JSON format
+
 // Outline frame definitions ------------------------------------------------
 #define TEMP_FRAME_START_X 0
 #define TEMP_FRAME_START_Y 0
@@ -41,9 +46,9 @@ uint8_t dateTextCharCounter = 0;
 
 #define DATE_AND_TIME_FRAME_START_Y 0
 #define DATE_AND_TIME_FRAME_END_Y DATE_AND_TIME_FRAME_Y
-#define DATE_AND_TIME_FRAME_X ((EPD_7IN5_V2_WIDTH + 40) / 2)
+#define DATE_AND_TIME_FRAME_X ((EPD_7IN5_V2_WIDTH * 20) / 40)
 
-#define TODAYS_WEATHER_FRAME_X ((EPD_7IN5_V2_WIDTH * 11) / 20)
+#define TODAYS_WEATHER_FRAME_X ((EPD_7IN5_V2_WIDTH * 42) / 80)
 #define TODAYS_WEATHER_FRAME_START_Y DATE_AND_TIME_FRAME_Y
 #define TODAYS_WEATHER_FRAME_END_Y (EPD_7IN5_V2_HEIGHT)
 
@@ -65,7 +70,7 @@ uint8_t dateTextCharCounter = 0;
 
 #define HOURLY_SEPERATOR_POSITION_START_Y (DATE_AND_TIME_FRAME_Y + 20)
 #define HOURLY_SEPERATOR_POSITION_END_Y (EPD_7IN5_V2_HEIGHT - 20)
-#define HOURLY_SEPERATOR_POSITION_X (((TODAYS_WEATHER_FRAME_X) * 25) / 44)
+#define HOURLY_SEPERATOR_POSITION_X (((TODAYS_WEATHER_FRAME_X) * 25) / 43)
 
 // Temperature and date/time text definitions --------------------------------
 #define TEMP_HOUSE_ICON_X 10 // (DATE_POSITION_X + (TEMP_FONT.Width * 6) + 5)
@@ -83,7 +88,7 @@ uint8_t dateTextCharCounter = 0;
 #define DATE_FONT OrbitronBold22
 
 // Todays weather position definitions ---------------------------------------
-#define TODAYS_WEATHER_TITLE_X ((TODAYS_WEATHER_FRAME_X) / 20)
+#define TODAYS_WEATHER_TITLE_X ((TODAYS_WEATHER_FRAME_X) / 40)
 #define TODAYS_WEATHER_TITLE_Y (DATE_AND_TIME_FRAME_Y + 10)
 #define TODAYS_WEATHER_TITLE_FONT OrbitronBold25
 
@@ -100,23 +105,11 @@ uint8_t dateTextCharCounter = 0;
 #define NOW_TEMP_FONT OrbitronBold22
 
 #define NOW_APPARENT_TEMP_POSITION_X (NOW_TEMP_POSITION_X)
-#define NOW_APPARENT_TEMP_POSITION_Y (NOW_TEMP_POSITION_Y + NOW_TEMP_FONT.Height + 5)
+#define NOW_APPARENT_TEMP_POSITION_Y (NOW_TEMP_POSITION_Y + NOW_TEMP_FONT.Height + 10)
 #define NOW_APPARENT_TEMP_FONT OrbitronBold16
 
-#define TODAY_SUNRISE_ICON_POSITION_X NOW_APPARENT_TEMP_POSITION_X
-#define TODAY_SUNRISE_ICON_POSITION_Y (TODAY_MIN_TEMP_POSITION_Y + TODAY_MIN_TEMP_FONT.Height + 10) // (NOW_APPARENT_TEMP_POSITION_Y + NOW_APPARENT_TEMP_FONT.Height + 5)
-#define TODAY_SUNRISE_FONT OrbitronBold16
-#define TODAY_SUNRISE_POSITION_X (TODAY_SUNRISE_ICON_POSITION_X + sunrise_24x24_width + 10)
-#define TODAY_SUNRISE_POSITION_Y (TODAY_SUNRISE_ICON_POSITION_Y + ((sunrise_24x24_height - TODAY_SUNRISE_FONT.Height) / 2))
-
-#define TODAY_SUNSET_FONT TODAY_SUNRISE_FONT
-#define TODAY_SUNSET_POSITION_X (TODAY_SUNRISE_POSITION_X + sunriseTextWidth + 20)
-#define TODAY_SUNSET_POSITION_Y TODAY_SUNRISE_POSITION_Y
-#define TODAY_SUNSET_ICON_POSITION_X (TODAY_SUNSET_POSITION_X + sunsetTextWidth + 13)
-#define TODAY_SUNSET_ICON_POSITION_Y TODAY_SUNRISE_ICON_POSITION_Y
-
 #define TODAY_MIN_TEMP_POSITION_X TODAY_SUNRISE_ICON_POSITION_X
-#define TODAY_MIN_TEMP_POSITION_Y (NOW_APPARENT_TEMP_POSITION_Y + NOW_APPARENT_TEMP_FONT.Height + 5) // (TODAY_SUNRISE_ICON_POSITION_Y + sunrise_24x24_height + 10)
+#define TODAY_MIN_TEMP_POSITION_Y (NOW_APPARENT_TEMP_POSITION_Y + NOW_APPARENT_TEMP_FONT.Height + 20) // (TODAY_SUNRISE_ICON_POSITION_Y + sunrise_24x24_height + 10)
 #define TODAY_MIN_TEMP_FONT OrbitronBold16
 #define TODAY_MIN_TEMP_ICON_POSITION_X (TODAY_MIN_TEMP_POSITION_X + minTempTodayTextWidth + 10)
 #define TODAY_MIN_TEMP_ICON_POSITION_Y (TODAY_MIN_TEMP_POSITION_Y + ((down_arrow_16x16_height - TODAY_MIN_TEMP_FONT.Height) / 2))
@@ -127,8 +120,20 @@ uint8_t dateTextCharCounter = 0;
 #define TODAY_MAX_TEMP_POSITION_Y (TODAY_MIN_TEMP_POSITION_Y)
 #define TODAY_MAX_TEMP_FONT TODAY_MIN_TEMP_FONT
 
+#define TODAY_SUNRISE_ICON_POSITION_X NOW_APPARENT_TEMP_POSITION_X
+#define TODAY_SUNRISE_ICON_POSITION_Y (TODAY_MIN_TEMP_POSITION_Y + TODAY_MIN_TEMP_FONT.Height + 20) // (NOW_APPARENT_TEMP_POSITION_Y + NOW_APPARENT_TEMP_FONT.Height + 5)
+#define TODAY_SUNRISE_FONT OrbitronBold16
+#define TODAY_SUNRISE_POSITION_X (TODAY_SUNRISE_ICON_POSITION_X + sunrise_24x24_width + 15)
+#define TODAY_SUNRISE_POSITION_Y (TODAY_SUNRISE_ICON_POSITION_Y + ((sunrise_24x24_height - TODAY_SUNRISE_FONT.Height) / 2))
+
+#define TODAY_SUNSET_FONT TODAY_SUNRISE_FONT
+#define TODAY_SUNSET_POSITION_X (TODAY_SUNRISE_POSITION_X + sunriseTextWidth + 20)
+#define TODAY_SUNSET_POSITION_Y TODAY_SUNRISE_POSITION_Y
+#define TODAY_SUNSET_ICON_POSITION_X (TODAY_SUNSET_POSITION_X + sunsetTextWidth + 15)
+#define TODAY_SUNSET_ICON_POSITION_Y TODAY_SUNRISE_ICON_POSITION_Y
+
 #define CURRENT_SNOWFALL_POSITION_X TODAY_MIN_TEMP_POSITION_X
-#define CURRENT_SNOWFALL_POSITION_Y (TODAY_SUNRISE_ICON_POSITION_Y + sunrise_24x24_height + 10) // (TODAY_MIN_TEMP_POSITION_Y + TODAY_MIN_TEMP_FONT.Height + 10)
+#define CURRENT_SNOWFALL_POSITION_Y (TODAY_SUNRISE_ICON_POSITION_Y + sunrise_24x24_height + 30) // (TODAY_MIN_TEMP_POSITION_Y + TODAY_MIN_TEMP_FONT.Height + 10)
 #define CURRENT_SNOWFALL_FONT OrbitronBold20
 
 #define CURRENT_RAIN_POSITION_X TODAY_MIN_TEMP_POSITION_X
@@ -137,13 +142,13 @@ uint8_t dateTextCharCounter = 0;
 
 #define CURRENT_CLOUD_COVER_FONT OrbitronBold22
 #define CURRENT_CLOUD_COVER_POSITION_X (TODAY_MIN_TEMP_POSITION_X + precipitation_Width + 25)
-#define CURRENT_CLOUD_COVER_POSITION_Y (CURRENT_SNOWFALL_POSITION_Y - ((CURRENT_CLOUD_COVER_FONT.Height - CURRENT_SNOWFALL_FONT.Height) / 2))
+#define CURRENT_CLOUD_COVER_POSITION_Y (CURRENT_SNOWFALL_POSITION_Y - ((CURRENT_CLOUD_COVER_FONT.Height - CURRENT_SNOWFALL_FONT.Height) / 1))
 
 #define CURRENT_CLOUD_COVER_ICON_POSITION_X (CURRENT_CLOUD_COVER_POSITION_X + currentCloudCover_text_Width + 10)
-#define CURRENT_CLOUD_COVER_ICON_POSITION_Y (CURRENT_SNOWFALL_POSITION_Y - ((cloudCoverIcon_32x32_height - CURRENT_CLOUD_COVER_FONT.Height) / 2))
+#define CURRENT_CLOUD_COVER_ICON_POSITION_Y (CURRENT_CLOUD_COVER_POSITION_Y - ((cloudCoverIcon_32x32_height - CURRENT_CLOUD_COVER_FONT.Height) / 2))
 
 #define CURRENT_HUMIDITY_POSITON_X CURRENT_SNOWFALL_POSITION_X
-#define CURRENT_HUMIDITY_POSITON_Y (CURRENT_CLOUD_COVER_POSITION_Y + cloudCoverIcon_32x32_height + 10)
+#define CURRENT_HUMIDITY_POSITON_Y (CURRENT_CLOUD_COVER_POSITION_Y + cloudCoverIcon_32x32_height + 20)
 #define CURRENT_HUMIDITY_FONT OrbitronBold18
 
 #define CURRENT_WIND_SPEED_FONT OrbitronBold18
@@ -152,6 +157,8 @@ uint8_t dateTextCharCounter = 0;
 
 #define CURRENT_WIND_SPEED_POSITION_X (CURRENT_WIND_SPEED_ICON_POSITION_X + north_16x16_width)
 #define CURRENT_WIND_SPEED_POSITION_Y (CURRENT_HUMIDITY_POSITON_Y + ((CURRENT_HUMIDITY_FONT.Height - CURRENT_WIND_SPEED_FONT.Height) / 2))
+
+// Todays Hourly weather position definitions ---------------------------------------
 
 #define HOURLY_FORECAST_TIME_TEXT_POSITION_X startPosition_X
 #define HOURLY_FORECAST_TIME_TEXT_POSITION_Y startPosition_Y
@@ -166,8 +173,8 @@ uint8_t dateTextCharCounter = 0;
 #define HOURLY_FORECAST_FONT OrbitronBold20
 
 #define HOURLY_FORECAST_APPARENT_FONT OrbitronBold16
-#define HOURLY_FORECAST_APPARENT_TEMPERATURE_X (HOURLY_FORECAST_TEMPERATURE_X + hourlyTempTextWidth + 10)
-#define HOURLY_FORECAST_APPARENT_TEMPERATURE_Y (HOURLY_FORECAST_TEMPERATURE_Y + (HOURLY_FORECAST_FONT.Height - HOURLY_FORECAST_APPARENT_FONT.Height))
+#define HOURLY_FORECAST_APPARENT_TEMPERATURE_X (HOURLY_FORECAST_TEMPERATURE_X)                                   // (HOURLY_FORECAST_TEMPERATURE_X + hourlyTempTextWidth + 7)
+#define HOURLY_FORECAST_APPARENT_TEMPERATURE_Y (HOURLY_FORECAST_TEMPERATURE_Y + HOURLY_FORECAST_FONT.Height + 5) // (HOURLY_FORECAST_TEMPERATURE_Y + (HOURLY_FORECAST_FONT.Height - HOURLY_FORECAST_APPARENT_FONT.Height))
 
 #define HOURLY_FORECAST_3_HOURS_POSITION_X (HOURLY_SEPERATOR_POSITION_X + 10)
 #define HOURLY_FORECAST_3_HOURS_POSITION_Y (HOURLY_SEPERATOR_POSITION_START_Y + 5)
@@ -175,12 +182,70 @@ uint8_t dateTextCharCounter = 0;
 #define HOURLY_FORECAST_6_HOURS_POSITION_Y (HOURLY_SEPERATOR_POSITION_START_Y + 140)
 
 #define HOURLY_SNOWFALL_POSITION_X (HOURLY_FORECAST_TEMPERATURE_X)
-#define HOURLY_SNOWFALL_POSITION_Y (HOURLY_FORECAST_TEMPERATURE_Y + HOURLY_FORECAST_TIME_TEXT_FONT.Height + 20)
+#define HOURLY_SNOWFALL_POSITION_Y (HOURLY_FORECAST_APPARENT_TEMPERATURE_Y + HOURLY_FORECAST_APPARENT_FONT.Height + 15) // (HOURLY_FORECAST_TEMPERATURE_Y + HOURLY_FORECAST_TIME_TEXT_FONT.Height + 20)
 #define HOURLY_SNOWFALL_FONT OrbitronBold18
 
 #define HOURLY_RAIN_POSITION_X HOURLY_SNOWFALL_POSITION_X
 #define HOURLY_RAIN_POSITION_Y HOURLY_SNOWFALL_POSITION_Y
 #define HOURLY_RAIN_FONT HOURLY_SNOWFALL_FONT
+
+// Daily weather forecast position definitions -----------------------------------------------------------------------------------------------------------
+#define TOMORROW_FORECAST_WINDOW_X (TODAYS_WEATHER_FRAME_X + 15)
+#define TOMORROW_FORECAST_WINDOW_Y (TODAYS_WEATHER_FRAME_START_Y + 5)
+#define DAY_TWO_FORECAST_WINDOW_X (WEATHER_DAY_ONE_HORIZONTAL_FRAME_START_X + 15)
+#define DAY_TWO_FORECAST_WINDOW_Y (WEATHER_DAY_ONE_HORIZONTAL_FRAME_Y + 5)
+#define DAY_THREE_FORECAST_WINDOW_X (WEATHER_DAY_TWO_HORIZONTAL_FRAME_START_X + 15)
+#define DAY_THREE_FORECAST_WINDOW_Y (WEATHER_DAY_TWO_HORIZONTAL_FRAME_Y + 5)
+
+#define DAILY_FORECAST_WEEKDAY_TEXT_POSITION_X startPosition_X
+#define DAILY_FORECAST_WEEKDAY_TEXT_POSITION_Y startPosition_Y
+#define DAILY_FORECAST_WEEKDAY_TEXT_FONT OrbitronBold22
+
+#define DAILY_FORECAST_WEEKDAY_TEXT_UNDERLINE_POSITION_START_X DAILY_FORECAST_WEEKDAY_TEXT_POSITION_X
+#define DAILY_FORECAST_WEEKDAY_TEXT_UNDERLINE_POSITION_END_X (DAILY_FORECAST_WEEKDAY_TEXT_UNDERLINE_POSITION_START_X + DailyForecastWeekdayText_Width)
+#define DAILY_FORECAST_WEEKDAY_TEXT_UNDERLINE_POSITION_Y (DAILY_FORECAST_WEEKDAY_TEXT_POSITION_Y + DAILY_FORECAST_WEEKDAY_TEXT_FONT.Height + 1)
+
+#define DAILY_FORECAST_MIN_TEMP_POSITION_X (DAILY_FORECAST_WEEKDAY_TEXT_POSITION_X + 0)
+#define DAILY_FORECAST_MIN_TEMP_POSITION_Y (DAILY_FORECAST_WEEKDAY_TEXT_UNDERLINE_POSITION_Y + 10)
+#define DAILY_FORECAST_MIN_TEMP_FONT OrbitronBold16
+#define DAILY_FORECAST_MIN_TEMP_ICON_POSITION_X (DAILY_FORECAST_MIN_TEMP_POSITION_X + minTempDailyTextWidth + 10)
+#define DAILY_FORECAST_MIN_TEMP_ICON_POSITION_Y (DAILY_FORECAST_MIN_TEMP_POSITION_Y)
+
+#define DAILY_FORECAST_MAX_TEMP_ICON_POSITION_X (DAILY_FORECAST_MIN_TEMP_ICON_POSITION_X + 20)
+#define DAILY_FORECAST_MAX_TEMP_ICON_POSITION_Y DAILY_FORECAST_MIN_TEMP_ICON_POSITION_Y
+#define DAILY_FORECAST_MAX_TEMP_POSITION_X (DAILY_FORECAST_MAX_TEMP_ICON_POSITION_X + up_arrow_16x16_width)
+#define DAILY_FORECAST_MAX_TEMP_POSITION_Y DAILY_FORECAST_MIN_TEMP_POSITION_Y
+#define DAILY_FORECAST_MAX_TEMP_FONT DAILY_FORECAST_MIN_TEMP_FONT
+
+#define DAILY_FORECAST_SUNRISE_FONT OrbitronBold16
+#define DAILY_FORECAST_SUNRISE_ICON_POSITION_X (DAILY_FORECAST_MIN_TEMP_POSITION_X)
+#define DAILY_FORECAST_SUNRISE_ICON_POSITION_Y (DAILY_FORECAST_MIN_TEMP_ICON_POSITION_Y + up_arrow_16x16_height + 10)
+#define DAILY_FORECAST_SUNRISE_POSITION_X (DAILY_FORECAST_SUNRISE_ICON_POSITION_X + sunrise_24x24_width + 1)
+#define DAILY_FORECAST_SUNRISE_POSITION_Y (DAILY_FORECAST_SUNRISE_ICON_POSITION_Y + (sunrise_24x24_height - DAILY_FORECAST_SUNRISE_FONT.Height))
+
+#define DAILY_FORECAST_SUNSET_FONT DAILY_FORECAST_SUNRISE_FONT
+#define DAILY_FORECAST_SUNSET_POSITION_X (DAILY_FORECAST_SUNRISE_POSITION_X + sunriseDailyTextWidth + 10)
+#define DAILY_FORECAST_SUNSET_POSITION_Y (DAILY_FORECAST_SUNRISE_POSITION_Y)
+#define DAILY_FORECAST_SUNSET_ICON_POSITION_X (DAILY_FORECAST_SUNSET_POSITION_X + sunsetDailyTextWidth + 5)
+#define DAILY_FORECAST_SUNSET_ICON_POSITION_Y (DAILY_FORECAST_SUNRISE_ICON_POSITION_Y)
+
+#define DAILY_FORECAST_SNOWFALL_FONT OrbitronBold16
+#define DAILY_FORECAST_SNOWFALL_POSITION_X (DAILY_FORECAST_SUNSET_ICON_POSITION_X + sunset_24x24_width + 10)
+#define DAILY_FORECAST_SNOWFALL_POSITION_Y (DAILY_FORECAST_MIN_TEMP_POSITION_Y)
+
+#define DAILY_FORECAST_RAIN_FONT DAILY_FORECAST_SNOWFALL_FONT
+#define DAILY_FORECAST_RAIN_POSITION_X DAILY_FORECAST_SNOWFALL_POSITION_X
+#define DAILY_FORECAST_RAIN_POSITION_Y DAILY_FORECAST_SNOWFALL_POSITION_Y
+
+#define DAILY_FORECAST_SPACER_START_Y (DAILY_FORECAST_MIN_TEMP_POSITION_Y - 5)
+#define DAILY_FORECAST_SPACER_END_Y (DAILY_FORECAST_SUNSET_ICON_POSITION_Y + sunset_24x24_height + 5)
+#define DAILY_FORECAST_SPACER_X (((DAILY_FORECAST_SNOWFALL_POSITION_X - (DAILY_FORECAST_SUNSET_ICON_POSITION_X + sunset_24x24_width)) / 2) + (DAILY_FORECAST_SUNSET_ICON_POSITION_X + sunset_24x24_width))
+
+#define DAILY_FORECAST_DAYLIGHT_FONT OrbitronBold16
+#define DAILY_FORECAST_DAYLIGHT_TIME_ICON_POSITION_X (DAILY_FORECAST_SNOWFALL_POSITION_X)
+#define DAILY_FORECAST_DAYLIGHT_TIME_ICON_POSITION_Y ((DAILY_FORECAST_SUNSET_ICON_POSITION_Y) + ((sunset_24x24_height - daylight_16x16_height)))
+#define DAILY_FORECAST_DAYLIGHT_TIME_POSITION_X (DAILY_FORECAST_DAYLIGHT_TIME_ICON_POSITION_X + daylight_16x16_width + 5)
+#define DAILY_FORECAST_DAYLIGHT_TIME_POSITION_Y (DAILY_FORECAST_DAYLIGHT_TIME_ICON_POSITION_Y + ((daylight_16x16_height - DAILY_FORECAST_DAYLIGHT_FONT.Height) / 2))
 
 // .---------------------------------------------.
 // | _____                 _   _                 |
@@ -577,7 +642,7 @@ void displayManager_generateTodaysWindAndHumidity()
 
 void displayManager_generateTodaysWeatherHourlyForecastWindow(int hourIndex, uint16_t startPosition_X, uint16_t startPosition_Y)
 {
-    // Current Cloud-Cover
+    // HourlyForecastTitle
     char hourlyForecastTimeText[10];
     sprintf(hourlyForecastTimeText, "%s", weatherAPI_getHourlyTime_HH_MM(hourIndex));
 
@@ -650,7 +715,7 @@ void displayManager_generateTodaysWeatherHourlyForecastWindow(int hourIndex, uin
     }
     else
     {
-        // current rain
+        // hourly rain
         char hourlyRain_mm_Text[8];
         sprintf(hourlyRain_mm_Text, "%.1f", weatherAPI_getHourlyRain(hourIndex));
 
@@ -672,14 +737,164 @@ void displayManager_generateTodaysWeatherHourlyForecastWindow(int hourIndex, uin
 
 void displayManager_generateTodaysWeather()
 {
+    // Current Display
     displayManager_generate_TodaysCurrentTemperature();
     displayManager_generateTodaysSunriseAndSunsetTimes();
     displayManager_generateTodaysMinMaxTemperatures();
     displayManager_generateTodaysPrecipitation_and_CloudCover();
     displayManager_generateTodaysWindAndHumidity();
 
+    // Hourly Forecast
     displayManager_generateTodaysWeatherHourlyForecastWindow((rtc_getHour() + TIME_INCREMENT_HOURLY_FORECAST), HOURLY_FORECAST_3_HOURS_POSITION_X, HOURLY_FORECAST_3_HOURS_POSITION_Y);
     displayManager_generateTodaysWeatherHourlyForecastWindow((rtc_getHour() + TIME_INCREMENT_HOURLY_FORECAST + TIME_INCREMENT_HOURLY_FORECAST), HOURLY_FORECAST_6_HOURS_POSITION_X, HOURLY_FORECAST_6_HOURS_POSITION_Y);
+}
+
+// .-----------------------.
+// | ____        _ _       |
+// ||  _ \  __ _(_) |_   _ |
+// || | | |/ _` | | | | | ||
+// || |_| | (_| | | | |_| ||
+// ||____/ \__,_|_|_|\__, ||
+// |                 |___/ |
+// '-----------------------'
+
+void displayManager_generateDailyWeatherForecastWindow(int dayIndex, uint16_t startPosition_X, uint16_t startPosition_Y)
+{
+    uint8_t dayIndexWeekday = rtc_getWeekdayIndex() + dayIndex;
+    // Correct the dayIndexWeekday so it is less than seven
+    if (dayIndexWeekday > 7)
+    {
+        dayIndexWeekday -= 7;
+    }
+    // Daily Forecast Title
+    char DailyForecastWeekdayText[10];
+    sprintf(DailyForecastWeekdayText, "%s", weekDaysDisplay[dayIndexWeekday]);
+
+    uint16_t DailyForecastWeekdayText_Width = Get_DrawedStringSize_EN(DailyForecastWeekdayText, &DAILY_FORECAST_WEEKDAY_TEXT_FONT);
+    Paint_DrawString_EN(DAILY_FORECAST_WEEKDAY_TEXT_POSITION_X, DAILY_FORECAST_WEEKDAY_TEXT_POSITION_Y, DailyForecastWeekdayText, &DAILY_FORECAST_WEEKDAY_TEXT_FONT, WHITE, BLACK);
+    Paint_DrawLine(DAILY_FORECAST_WEEKDAY_TEXT_UNDERLINE_POSITION_START_X, DAILY_FORECAST_WEEKDAY_TEXT_UNDERLINE_POSITION_Y, DAILY_FORECAST_WEEKDAY_TEXT_UNDERLINE_POSITION_END_X, DAILY_FORECAST_WEEKDAY_TEXT_UNDERLINE_POSITION_Y, BLACK, DOT_PIXEL_1X1, LINE_STYLE_SOLID);
+
+    // Daily Forecast Min Temperature
+    char minTempDailyText[10];
+    sprintf(minTempDailyText, "%.1f", weatherAPI_getDailyMinTemperature(dayIndex));
+
+    for (int i = 0; i < sizeof(minTempDailyText); i++)
+    {
+        if (minTempDailyText[i] == '\0')
+        {
+            minTempDailyText[i] = DEGREE_CHAR;
+            minTempDailyText[i + 1] = 'C';
+            minTempDailyText[i + 2] = '\0';
+            break;
+        }
+    }
+    uint16_t minTempDailyTextWidth = Get_DrawedStringSize_EN(minTempDailyText, &DAILY_FORECAST_MIN_TEMP_FONT);
+    Paint_DrawString_EN(DAILY_FORECAST_MIN_TEMP_POSITION_X, DAILY_FORECAST_MIN_TEMP_POSITION_Y, minTempDailyText, &TODAY_MIN_TEMP_FONT, WHITE, BLACK);
+    Paint_DrawImage(down_arrow_16x16_bits, DAILY_FORECAST_MIN_TEMP_ICON_POSITION_X, DAILY_FORECAST_MIN_TEMP_ICON_POSITION_Y, down_arrow_16x16_width, down_arrow_16x16_height);
+
+    // Daily Forecast Max Temperature
+    char maxTempDailyText[10];
+    sprintf(maxTempDailyText, "%.1f", weatherAPI_getDailyMaxTemperature(dayIndex));
+
+    for (int i = 0; i < sizeof(maxTempDailyText); i++)
+    {
+        if (maxTempDailyText[i] == '\0')
+        {
+            maxTempDailyText[i] = DEGREE_CHAR;
+            maxTempDailyText[i + 1] = 'C';
+            maxTempDailyText[i + 2] = '\0';
+            break;
+        }
+    }
+    Paint_DrawImage(up_arrow_16x16_bits, DAILY_FORECAST_MAX_TEMP_ICON_POSITION_X, DAILY_FORECAST_MAX_TEMP_ICON_POSITION_Y, up_arrow_16x16_width, up_arrow_16x16_height);
+    uint16_t maxTempDailyTextWidth = Get_DrawedStringSize_EN(maxTempDailyText, &DAILY_FORECAST_MAX_TEMP_FONT);
+    Paint_DrawString_EN(DAILY_FORECAST_MAX_TEMP_POSITION_X, DAILY_FORECAST_MAX_TEMP_POSITION_Y, maxTempDailyText, &DAILY_FORECAST_MAX_TEMP_FONT, WHITE, BLACK);
+
+    // Sunrise Daily
+    char sunriseDailyText[8];
+    sprintf(sunriseDailyText, "%s", weatherAPI_getDailySunriseTime(dayIndex));
+    uint16_t sunriseDailyTextWidth = Get_DrawedStringSize_EN(sunriseDailyText, &DAILY_FORECAST_SUNRISE_FONT);
+
+    Paint_DrawImage(sunrise_24x24_bits, DAILY_FORECAST_SUNRISE_ICON_POSITION_X, DAILY_FORECAST_SUNRISE_ICON_POSITION_Y, sunrise_24x24_width, sunrise_24x24_height);
+    Paint_DrawString_EN(DAILY_FORECAST_SUNRISE_POSITION_X, DAILY_FORECAST_SUNRISE_POSITION_Y, sunriseDailyText, &DAILY_FORECAST_SUNRISE_FONT, WHITE, BLACK);
+
+    // Sunset Daily
+    char sunsetDailyText[8];
+    sprintf(sunsetDailyText, "%s", weatherAPI_getDailySunsetTime(dayIndex));
+    uint16_t sunsetDailyTextWidth = Get_DrawedStringSize_EN(sunsetDailyText, &DAILY_FORECAST_SUNSET_FONT);
+
+    Paint_DrawString_EN(DAILY_FORECAST_SUNSET_POSITION_X, DAILY_FORECAST_SUNSET_POSITION_Y, sunsetDailyText, &DAILY_FORECAST_SUNSET_FONT, WHITE, BLACK);
+    Paint_DrawImage(sunset_24x24_bits, DAILY_FORECAST_SUNSET_ICON_POSITION_X, DAILY_FORECAST_SUNSET_ICON_POSITION_Y, sunset_24x24_width, sunset_24x24_height);
+
+    // daily precipitation
+    double dailySnowfall_cm = weatherAPI_getHourlySnowfall(dayIndex);
+
+    uint16_t precipitation_Width;
+
+    // Draw spacer-line between min/maxtemp & precipitation
+    Paint_DrawLine(DAILY_FORECAST_SPACER_X, DAILY_FORECAST_SPACER_START_Y, DAILY_FORECAST_SPACER_X, DAILY_FORECAST_SPACER_END_Y, BLACK, DOT_PIXEL_1X1, LINE_STYLE_SOLID);
+
+    if (dailySnowfall_cm > 0)
+    // if (1)
+    {
+        // daily Snowfall
+        char dailySnowfall_cm_Text[8];
+        sprintf(dailySnowfall_cm_Text, "%.1f", dailySnowfall_cm);
+
+        for (int i = 0; i < sizeof(dailySnowfall_cm_Text); i++)
+        {
+            if (dailySnowfall_cm_Text[i] == '\0')
+            {
+                dailySnowfall_cm_Text[i] = 'c';
+                dailySnowfall_cm_Text[i + 1] = 'm';
+                dailySnowfall_cm_Text[i + 2] = '\0';
+                break;
+            }
+        }
+
+        precipitation_Width = Get_DrawedStringSize_EN(dailySnowfall_cm_Text, &DAILY_FORECAST_SNOWFALL_FONT);
+        Paint_DrawString_EN(DAILY_FORECAST_SNOWFALL_POSITION_X, DAILY_FORECAST_SNOWFALL_POSITION_Y, dailySnowfall_cm_Text, &DAILY_FORECAST_SNOWFALL_FONT, WHITE, BLACK);
+    }
+    else
+    {
+        // daily rain
+        char dailyRain_mm_Text[8];
+        sprintf(dailyRain_mm_Text, "%.1f", weatherAPI_getHourlyRain(dayIndex));
+
+        for (int i = 0; i < sizeof(dailyRain_mm_Text); i++)
+        {
+            if (dailyRain_mm_Text[i] == '\0')
+            {
+                dailyRain_mm_Text[i] = 'm';
+                dailyRain_mm_Text[i + 1] = 'm';
+                dailyRain_mm_Text[i + 2] = '\0';
+                break;
+            }
+        }
+
+        precipitation_Width = Get_DrawedStringSize_EN(dailyRain_mm_Text, &DAILY_FORECAST_RAIN_FONT);
+        Paint_DrawString_EN(DAILY_FORECAST_RAIN_POSITION_X, DAILY_FORECAST_RAIN_POSITION_Y, dailyRain_mm_Text, &DAILY_FORECAST_RAIN_FONT, WHITE, BLACK);
+    }
+
+    // Daily Daylight
+    double Daylight_seconds = weatherApi_getDailyDaylightDuration(dayIndex);
+
+    int DailyDaylight_HH = (Daylight_seconds / 3600);                                             // Berechnet Stunden
+    int DailyDaylight_mm = (double)(((double)(Daylight_seconds / 3600) - DailyDaylight_HH) * 60); // Berechnet Minuten
+
+    char DaylightDailyText[8];
+    sprintf(DaylightDailyText, "%d:%d", DailyDaylight_HH, DailyDaylight_mm);
+    uint16_t DaylightDailyTextWidth = Get_DrawedStringSize_EN(DaylightDailyText, &DAILY_FORECAST_DAYLIGHT_FONT);
+
+    Paint_DrawImage(daylight_16x16_bits, DAILY_FORECAST_DAYLIGHT_TIME_ICON_POSITION_X, DAILY_FORECAST_DAYLIGHT_TIME_ICON_POSITION_Y, daylight_16x16_width, daylight_16x16_height);
+    Paint_DrawString_EN(DAILY_FORECAST_DAYLIGHT_TIME_POSITION_X, DAILY_FORECAST_DAYLIGHT_TIME_POSITION_Y, sunriseDailyText, &DAILY_FORECAST_DAYLIGHT_FONT, WHITE, BLACK);
+}
+
+void displayManager_generateDailyWeatherForecast()
+{
+    displayManager_generateDailyWeatherForecastWindow(TOMORROW_TIME_INDEX, TOMORROW_FORECAST_WINDOW_X, TOMORROW_FORECAST_WINDOW_Y);
+    displayManager_generateDailyWeatherForecastWindow(IN_2_DAYS_TIME_INDEX, DAY_TWO_FORECAST_WINDOW_X, DAY_TWO_FORECAST_WINDOW_Y);
+    displayManager_generateDailyWeatherForecastWindow(IN_3_DAYS_TIME_INDEX, DAY_THREE_FORECAST_WINDOW_X, DAY_THREE_FORECAST_WINDOW_Y);
 }
 
 // .-----------------.
@@ -749,6 +964,7 @@ void displayManager_updateDisplay()
     displayManager_generateTimeAndDateText();
     displayManager_generateHomeTemperature();
     displayManager_generateTodaysWeather();
+    displayManager_generateDailyWeatherForecast();
 
     displayManager_drawBoxOutlines();
 
