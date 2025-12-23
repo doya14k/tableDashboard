@@ -158,6 +158,11 @@ String englischeWeekDaysDisplay[8] = {" ", "Monday", "Tuesday", "Wednesday", "Th
 #define CURRENT_WIND_SPEED_POSITION_X (CURRENT_WIND_SPEED_ICON_POSITION_X + north_16x16_width)
 #define CURRENT_WIND_SPEED_POSITION_Y (CURRENT_HUMIDITY_POSITON_Y + ((CURRENT_HUMIDITY_FONT.Height - CURRENT_WIND_SPEED_FONT.Height) / 2))
 
+#define CURRENT_WEATHER_ICON_POSITION_X (TODAYS_WEATHER_TITLE_X + 120)
+#define CURRENT_WEATHER_ICON_POSITION_Y (TODAYS_WEATHER_TITLE_Y + 20)
+#define CURRENT_WEATHER_ICON_WIDTH weatherIcons_96x96_width
+#define CURRENT_WEATHER_ICON_HEIGHT weatherIcons_96x96_height
+
 // Todays Hourly weather position definitions ---------------------------------------
 
 #define HOURLY_FORECAST_TIME_TEXT_POSITION_X startPosition_X
@@ -188,6 +193,11 @@ String englischeWeekDaysDisplay[8] = {" ", "Monday", "Tuesday", "Wednesday", "Th
 #define HOURLY_RAIN_POSITION_X HOURLY_SNOWFALL_POSITION_X
 #define HOURLY_RAIN_POSITION_Y HOURLY_SNOWFALL_POSITION_Y
 #define HOURLY_RAIN_FONT HOURLY_SNOWFALL_FONT
+
+#define HOURLY_WEATHER_ICON_POSITION_X (HOURLY_FORECAST_TEMPERATURE_X + 95)
+#define HOURLY_WEATHER_ICON_POSITION_Y (HOURLY_FORECAST_TEMPERATURE_Y + 25)
+#define HOURLY_WEATHER_ICON_WIDTH weatherIcons_64x64_width
+#define HOURLY_WEATHER_ICON_HEIGHT weatherIcons_64x64_height
 
 // Daily weather forecast position definitions -----------------------------------------------------------------------------------------------------------
 #define TOMORROW_FORECAST_WINDOW_X (TODAYS_WEATHER_FRAME_X + 15)
@@ -246,6 +256,11 @@ String englischeWeekDaysDisplay[8] = {" ", "Monday", "Tuesday", "Wednesday", "Th
 #define DAILY_FORECAST_DAYLIGHT_TIME_ICON_POSITION_Y ((DAILY_FORECAST_SUNSET_ICON_POSITION_Y) + ((sunset_24x24_height - daylight_16x16_height)))
 #define DAILY_FORECAST_DAYLIGHT_TIME_POSITION_X (DAILY_FORECAST_DAYLIGHT_TIME_ICON_POSITION_X + daylight_16x16_width + 5)
 #define DAILY_FORECAST_DAYLIGHT_TIME_POSITION_Y (DAILY_FORECAST_DAYLIGHT_TIME_ICON_POSITION_Y + ((daylight_16x16_height - DAILY_FORECAST_DAYLIGHT_FONT.Height) / 2))
+
+#define DAILY_WEATHER_ICON_POSITION_X (DAILY_FORECAST_SPACER_X + 95)
+#define DAILY_WEATHER_ICON_POSITION_Y (DAILY_FORECAST_WEEKDAY_TEXT_UNDERLINE_POSITION_Y + 0)
+#define DAILY_WEATHER_ICON_WIDTH weatherIcons_72x72_width
+#define DAILY_WEATHER_ICON_HEIGHT weatherIcons_72x72_height
 
 // .----------------------------------------------------------------------.
 // |__        __         _   _                   ___                      |
@@ -906,25 +921,110 @@ const int weatherIcons_96x96_height = day_0_clearSky_96x96_height;
 // ||_|   \__,_|_| |_|\___|\__|_|\___/|_| |_|___/|
 // '---------------------------------------------'
 
-int isDay0_or_Night1(String timeToCompare, String SunriseTime, String SunsetTime)
+bool currentTime_afterTodaysSunrise(uint8_t timeToCompareHH, uint8_t timeToCompareMM, String TodaysSunrise)
 {
-    Serial.print("timeToCompare: ");
-    Serial.print(timeToCompare);
+    Serial.print("TodaysSunrise: ");
+    Serial.println(TodaysSunrise);
+
+    uint8_t SunriseTimeHH = ((TodaysSunrise[0] - '0') * 10) + (TodaysSunrise[1] - '0');
+    uint8_t SunriseTimeMM = ((TodaysSunrise[3] - '0') * 10) + (TodaysSunrise[4] - '0');
+
+    Serial.print("After conversion - ");
+    Serial.print("timeToCompareHH: ");
+    Serial.print(timeToCompareHH);
+    Serial.print(" timeToCompareMM: ");
+    Serial.print(timeToCompareMM);
+    Serial.print(" SunriseTimeHH: ");
+    Serial.print(SunriseTimeHH);
+    Serial.print(" SunriseTimeMM: ");
+    Serial.println(SunriseTimeMM);
+
+    // current Time is after Sunrise
+    if (timeToCompareHH >= SunriseTimeHH)
+    {
+        if (timeToCompareHH == SunriseTimeHH)
+        {
+            if (timeToCompareMM >= SunriseTimeMM)
+            {
+                Serial.println("Current time is after today's sunrise");
+                return true; // after sunrise
+            }
+        }
+        else
+        {
+            Serial.println("Current time is after today's sunrise");
+            return true; // after sunrise
+        }
+    }
+
+    Serial.println("Current time is before today's sunrise");
+    return false; // before sunrise
+}
+
+uint8_t isDay0_or_Night1(uint8_t timeToCompareHH, uint8_t timeToCompareMM, String SunriseTime, String SunsetTime)
+{
     Serial.print("SunriseTime: ");
     Serial.print(SunriseTime);
     Serial.print("SunsetTime: ");
     Serial.println(SunsetTime);
-
-    uint8_t timeToCompareHH = ((timeToCompare[0] - '0') * 10) + (timeToCompare[1] - '0');
-    uint8_t timeToCompareMM = ((timeToCompare[3] - '0') * 10) + (timeToCompare[4] - '0');
 
     uint8_t SunriseTimeHH = ((SunriseTime[0] - '0') * 10) + (SunriseTime[1] - '0');
     uint8_t SunriseTimeMM = ((SunriseTime[3] - '0') * 10) + (SunriseTime[4] - '0');
 
     uint8_t SunsetTimeHH = ((SunsetTime[0] - '0') * 10) + (SunsetTime[1] - '0');
     uint8_t SunsetTimeMM = ((SunsetTime[3] - '0') * 10) + (SunsetTime[4] - '0');
+    Serial.print("After conversion - ");
+    Serial.print("timeToCompareHH: ");
+    Serial.print(timeToCompareHH);
+    Serial.print(" timeToCompareMM: ");
+    Serial.print(timeToCompareMM);
+    Serial.print(" SunriseTimeHH: ");
+    Serial.print(SunriseTimeHH);
+    Serial.print(" SunriseTimeMM: ");
+    Serial.print(SunriseTimeMM);
+    Serial.print(" SunsetTimeHH: ");
+    Serial.print(SunsetTimeHH);
+    Serial.print(" SunsetTimeMM: ");
+    Serial.println(SunsetTimeMM);
 
-    return 0;
+    // current Time is before Sunrise
+    if (timeToCompareHH <= SunriseTimeHH)
+    {
+        if (timeToCompareHH == SunriseTimeHH)
+        {
+            if (timeToCompareMM < SunriseTimeMM)
+            {
+                Serial.println("It's nighttime (before sunrise)"); // We have night
+                return 1;                                          // Nighttime
+            }
+        }
+        else
+        {
+            Serial.println("It's nighttime (before sunrise)"); // We have night
+            return 1;                                          // Nighttime
+        }
+    }
+
+    // current Time is after Sunset
+    if (timeToCompareHH >= SunsetTimeHH)
+    {
+        if (timeToCompareHH == SunsetTimeHH)
+        {
+            if (timeToCompareMM >= SunsetTimeMM)
+            {
+                Serial.println("It's nighttime (after sunset)"); // We have night
+                return 1;                                        // Nighttime
+            }
+        }
+        else
+        {
+            Serial.println("It's nighttime (after sunset)"); // We have night
+            return 1;                                        // Nighttime
+        }
+    }
+
+    Serial.println("It's daytime");
+    return 0; // Daytime
 }
 
 // .-------------------------------------.
@@ -1406,11 +1506,31 @@ void displayManager_generateTodaysWeatherHourlyForecastWindow(int hourIndex, uin
         Paint_DrawString_EN(HOURLY_RAIN_POSITION_X, HOURLY_RAIN_POSITION_Y, hourlyRain_mm_Text, &HOURLY_RAIN_FONT, WHITE, BLACK);
     }
 
-    // Testing Hourly Weather-Icon --> best size is 64
-    uint16_t startx = HOURLY_FORECAST_TEMPERATURE_X + 95; // DATE_AND_TIME_FRAME_X + 20;
-    uint16_t starty = HOURLY_FORECAST_TEMPERATURE_Y + 25; // DATE_AND_TIME_FRAME_START_Y + 20;
-    uint16_t width = 64;
-    Paint_DrawRectangle(startx, starty, (startx + width), (starty + width), BLACK, DOT_PIXEL_1X1, DRAW_FILL_FULL);
+    // Hourly Weather Icon
+    uint8_t dayIndex = 0;
+    uint8_t hourIndexToCompare = hourIndex;
+    // Hourly Index reaches current day +1
+
+    // Cheking if the hourly Forecast reaches next day
+    if (hourIndex < 24)
+    {
+        // if within current day, then take todays sunrise/sunset times
+        dayIndex = 0;
+    }
+    else
+    {
+        // if in next day, then take tomorrows sunrise/sunset times
+        dayIndex = 1;
+        // also correct the hourIndex to be within 0-23
+        hourIndexToCompare = hourIndexToCompare - 24;
+    }
+
+    // Serial.print("Hour to compare: ");
+    // Serial.println(hourIndexToCompare);
+
+    Paint_DrawImage(weatherIcons_64x64_bits[isDay0_or_Night1(hourIndexToCompare, rtc_getMinutes(), weatherAPI_getDailySunriseTime(dayIndex), weatherAPI_getDailySunsetTime(dayIndex))][weatherAPI_getHourlyWeatherCode(hourIndex)], HOURLY_WEATHER_ICON_POSITION_X, HOURLY_WEATHER_ICON_POSITION_Y, HOURLY_WEATHER_ICON_WIDTH, HOURLY_WEATHER_ICON_HEIGHT);
+    // Testing Hourly Weather-Icon --> best size is 64x64
+    // Paint_DrawRectangle(HOURLY_WEATHER_ICON_POSITION_X, HOURLY_WEATHER_ICON_POSITION_Y, (HOURLY_WEATHER_ICON_POSITION_X + HOURLY_WEATHER_ICON_WIDTH), (HOURLY_WEATHER_ICON_POSITION_Y + HOURLY_WEATHER_ICON_WIDTH), BLACK, DOT_PIXEL_1X1, DRAW_FILL_FULL);
 }
 
 void displayManager_generateTodaysWeather()
@@ -1422,22 +1542,14 @@ void displayManager_generateTodaysWeather()
     displayManager_generateTodaysPrecipitation_and_CloudCover();
     displayManager_generateTodaysWindAndHumidity();
 
+    // Current Weather Icon
+    Paint_DrawImage(weatherIcons_96x96_bits[isDay0_or_Night1(rtc_getHour(), rtc_getMinutes(), weatherAPI_getDailySunriseTime(0), weatherAPI_getDailySunsetTime(0))][weatherAPI_getCurrentWeatherCode()], CURRENT_WEATHER_ICON_POSITION_X, CURRENT_WEATHER_ICON_POSITION_Y, CURRENT_WEATHER_ICON_WIDTH, CURRENT_WEATHER_ICON_HEIGHT);
+    // Testing Current Weather-Icon --> best size ist 96x96
+    // Paint_DrawRectangle(startx, starty, (CURRENT_WEATHER_ICON_POSITION_X + CURRENT_WEATHER_ICON_WIDTH), (CURRENT_WEATHER_ICON_POSITION_Y + CURRENT_WEATHER_ICON_WIDTH), BLACK, DOT_PIXEL_1X1, DRAW_FILL_FULL); // Testing rectangle
+
     // Hourly Forecast
     displayManager_generateTodaysWeatherHourlyForecastWindow((rtc_getHour() + TIME_INCREMENT_HOURLY_FORECAST), HOURLY_FORECAST_3_HOURS_POSITION_X, HOURLY_FORECAST_3_HOURS_POSITION_Y);
     displayManager_generateTodaysWeatherHourlyForecastWindow((rtc_getHour() + TIME_INCREMENT_HOURLY_FORECAST + TIME_INCREMENT_HOURLY_FORECAST), HOURLY_FORECAST_6_HOURS_POSITION_X, HOURLY_FORECAST_6_HOURS_POSITION_Y);
-
-    // Paint_DrawImage(day_0_clearSky_80x80_bits, (DATE_AND_TIME_FRAME_X + 20), (DATE_AND_TIME_FRAME_START_Y + 20), day_0_clearSky_80x80_width, day_0_clearSky_80x80_height);
-    // Paint_DrawImage(day_0_clearSky_72x72_bits, (DATE_AND_TIME_FRAME_X + 20), (DATE_AND_TIME_FRAME_START_Y + 20 + 5 + day_0_clearSky_80x80_height), day_0_clearSky_72x72_width, day_0_clearSky_72x72_height);
-    // Paint_DrawImage(day_0_clearSky_64x64_bits, (DATE_AND_TIME_FRAME_X + 20 + 5 + day_0_clearSky_80x80_width), (DATE_AND_TIME_FRAME_START_Y + 20), day_0_clearSky_64x64_width, day_0_clearSky_64x64_height);
-    // Paint_DrawImage(day_0_clearSky_24x24_bits, (DATE_AND_TIME_FRAME_X + 20 + 5 + day_0_clearSky_80x80_width + day_0_clearSky_64x64_width + 5), (DATE_AND_TIME_FRAME_START_Y + 20), day_0_clearSky_24x24_width, day_0_clearSky_24x24_height);
-
-    // Testing Current Weather-Icon --> best size ist 96x96
-    uint16_t startx = TODAYS_WEATHER_TITLE_X + 120; // DATE_AND_TIME_FRAME_X + 20;
-    uint16_t starty = TODAYS_WEATHER_TITLE_Y + 20;  // DATE_AND_TIME_FRAME_START_Y + 20;
-    uint16_t width = 96;
-    // Paint_DrawRectangle(startx, starty, (startx + width), (starty + width), BLACK, DOT_PIXEL_1X1, DRAW_FILL_FULL);
-
-    Paint_DrawImage(weatherIcons_96x96_bits[0][weatherAPI_getCurrentWeatherCode()], startx, starty, weatherIcons_96x96_width, weatherIcons_96x96_height);
 }
 
 // .-----------------------.
@@ -1580,11 +1692,11 @@ void displayManager_generateDailyWeatherForecastWindow(int dayIndex, uint16_t st
     Paint_DrawImage(daylight_16x16_bits, DAILY_FORECAST_DAYLIGHT_TIME_ICON_POSITION_X, DAILY_FORECAST_DAYLIGHT_TIME_ICON_POSITION_Y, daylight_16x16_width, daylight_16x16_height);
     Paint_DrawString_EN(DAILY_FORECAST_DAYLIGHT_TIME_POSITION_X, DAILY_FORECAST_DAYLIGHT_TIME_POSITION_Y, sunriseDailyText, &DAILY_FORECAST_DAYLIGHT_FONT, WHITE, BLACK);
 
-    // Testing Hourly Weather-Icon --> best size is 72
-    uint16_t startx = DAILY_FORECAST_SPACER_X + 95;                         // DATE_AND_TIME_FRAME_X + 20;
-    uint16_t starty = DAILY_FORECAST_WEEKDAY_TEXT_UNDERLINE_POSITION_Y + 0; // DATE_AND_TIME_FRAME_START_Y + 20;
-    uint16_t width = 72;
-    Paint_DrawRectangle(startx, starty, (startx + width), (starty + width), BLACK, DOT_PIXEL_1X1, DRAW_FILL_FULL);
+    // Daily Weather Icon
+    // Paint_DrawImage(weatherIcons_72x72_bits[isDay0_or_Night1(rtc_getHour(), rtc_getMinutes(), weatherAPI_getDailySunriseTime(dayIndex), weatherAPI_getDailySunsetTime(dayIndex))][weatherAPI_getDailyWeatherCode(dayIndex)], DAILY_WEATHER_ICON_POSITION_X, DAILY_WEATHER_ICON_POSITION_Y, DAILY_WEATHER_ICON_WIDTH, DAILY_WEATHER_ICON_HEIGHT);
+    Paint_DrawImage(weatherIcons_72x72_bits[isDay0_or_Night1(rtc_getHour(), rtc_getMinutes(), weatherAPI_getDailySunriseTime(dayIndex), weatherAPI_getDailySunsetTime(dayIndex))][weatherAPI_getHourlyWeatherCode(((dayIndex * 24) - 1))], DAILY_WEATHER_ICON_POSITION_X, DAILY_WEATHER_ICON_POSITION_Y, DAILY_WEATHER_ICON_WIDTH, DAILY_WEATHER_ICON_HEIGHT);
+    // Testing Daily Weather-Icon --> best size is 72x72
+    // Paint_DrawRectangle(DAILY_WEATHER_ICON_POSITION_X, DAILY_WEATHER_ICON_POSITION_Y, (DAILY_WEATHER_ICON_POSITION_X + DAILY_WEATHER_ICON_WIDTH), (DAILY_WEATHER_ICON_POSITION_Y + DAILY_WEATHER_ICON_WIDTH), BLACK, DOT_PIXEL_1X1, DRAW_FILL_FULL);
 }
 
 void displayManager_generateDailyWeatherForecast()

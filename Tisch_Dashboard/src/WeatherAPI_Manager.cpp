@@ -113,14 +113,14 @@ bool weatherAPI_isDay()
     return (bool)weatherAPI_JSON["current"]["is_day"].as<bool>();
 }
 
-int weatherAPI_getCurrentWeatherCode()
+uint8_t weatherAPI_getCurrentWeatherCode()
 {
 #ifdef PRINT_OUT_DATA
     Serial.print("weather_code ");
     Serial.print(weatherAPI_JSON["current"]["weather_code"].as<String>());
     Serial.println("");
 #endif // PRINT_OUT_DATA
-    return (int)weatherAPI_JSON["current"]["apparent_temperature"].as<int>();
+    return (uint8_t)weatherAPI_JSON["current"]["weather_code"].as<uint8_t>();
 }
 
 double weatherAPI_getCurrentWindSpeed()
@@ -256,7 +256,7 @@ double weatherAPI_getHourlyApparentTemperature(int hourIndex)
     return weatherAPI_JSON["hourly"]["apparent_temperature"][hourIndex].as<double>();
 }
 
-int weatherAPI_getHourlyWeatherCode(int hourIndex)
+uint8_t weatherAPI_getHourlyWeatherCode(int hourIndex)
 {
 #ifdef PRINT_OUT_DATA
     Serial.print("weather_code at hourIndex ");
@@ -265,7 +265,7 @@ int weatherAPI_getHourlyWeatherCode(int hourIndex)
     Serial.print(weatherAPI_JSON["hourly"]["weather_code"][hourIndex].as<String>());
     Serial.println("");
 #endif // PRINT_OUT_DATA
-    return weatherAPI_JSON["hourly"]["weather_code"][hourIndex].as<int>();
+    return weatherAPI_JSON["hourly"]["weather_code"][hourIndex].as<uint8_t>();
 }
 
 double weatherAPI_getHourlyPrecipitation(int hourIndex)
@@ -386,7 +386,7 @@ String weatherAPI_getDailySunsetTime(int dayIndex)
     return sunsetTimeHH_MM.c_str();
 }
 
-int weatherAPI_getDailyWeatherCode(int dayIndex)
+uint8_t weatherAPI_getDailyWeatherCode(int dayIndex)
 {
 #ifdef PRINT_OUT_DATA
     Serial.print("Todays WeatherCode at dayIndex ");
@@ -395,7 +395,7 @@ int weatherAPI_getDailyWeatherCode(int dayIndex)
     Serial.print(weatherAPI_JSON["daily"]["weather_code"][dayIndex].as<String>());
     Serial.println("");
 #endif // PRINT_OUT_DATA
-    return weatherAPI_JSON["daily"]["weather_code"][dayIndex].as<int>();
+    return weatherAPI_JSON["daily"]["weather_code"][dayIndex].as<uint8_t>();
 }
 
 double weatherAPI_getDailyPrecipitationSum(int dayIndex)
