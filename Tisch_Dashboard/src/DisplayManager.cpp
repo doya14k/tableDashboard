@@ -247,6 +247,657 @@ String englischeWeekDaysDisplay[8] = {" ", "Monday", "Tuesday", "Wednesday", "Th
 #define DAILY_FORECAST_DAYLIGHT_TIME_POSITION_X (DAILY_FORECAST_DAYLIGHT_TIME_ICON_POSITION_X + daylight_16x16_width + 5)
 #define DAILY_FORECAST_DAYLIGHT_TIME_POSITION_Y (DAILY_FORECAST_DAYLIGHT_TIME_ICON_POSITION_Y + ((daylight_16x16_height - DAILY_FORECAST_DAYLIGHT_FONT.Height) / 2))
 
+// .----------------------------------------------------------------------.
+// |__        __         _   _                   ___                      |
+// |\ \      / /__  __ _| |_| |__   ___ _ __    |_ _|___ ___  _ __        |
+// | \ \ /\ / / _ \/ _` | __| '_ \ / _ \ '__|____| |/ __/ _ \| '_ \ _____ |
+// |  \ V  V /  __/ (_| | |_| | | |  __/ | |_____| | (_| (_) | | | |_____||
+// | __\_/\_/ \___|\__,_|\__|_| |_|\___|_|      |___\___\___/|_| |_|      |
+// ||  _ \ ___ (_)_ __ | |_ ___ _ __                                      |
+// || |_) / _ \| | '_ \| __/ _ \ '__|                                     |
+// ||  __/ (_) | | | | | ||  __/ |                                        |
+// ||_|   \___/|_|_| |_|\__\___|_|                                        |
+// '----------------------------------------------------------------------'
+
+// Icons 64x64
+const unsigned char *day_weatherIcons_64x64_bits[] = {
+    day_0_clearSky_64x64_bits,                                         // 0
+    day_1_mainlyClear_64x64_bits,                                      // 1
+    day_2_mainlyClear_64x64_bits,                                      // 2
+    day_3_overcast_64x64_bits,                                         // 3
+    0,                                                                 // 4
+    0,                                                                 // 5
+    0,                                                                 // 6
+    0,                                                                 // 7
+    0,                                                                 // 8
+    0,                                                                 // 9
+    0,                                                                 // 10
+    0,                                                                 // 11
+    0,                                                                 // 12
+    0,                                                                 // 13
+    0,                                                                 // 14
+    0,                                                                 // 15
+    0,                                                                 // 16
+    0,                                                                 // 17
+    0,                                                                 // 18
+    0,                                                                 // 19
+    0,                                                                 // 20
+    0,                                                                 // 21
+    0,                                                                 // 22
+    0,                                                                 // 23
+    0,                                                                 // 24
+    0,                                                                 // 25
+    0,                                                                 // 26
+    0,                                                                 // 27
+    0,                                                                 // 28
+    0,                                                                 // 29
+    0,                                                                 // 30
+    0,                                                                 // 31
+    0,                                                                 // 32
+    0,                                                                 // 33
+    0,                                                                 // 34
+    0,                                                                 // 35
+    0,                                                                 // 36
+    0,                                                                 // 37
+    0,                                                                 // 38
+    0,                                                                 // 39
+    0,                                                                 // 40
+    0,                                                                 // 41
+    0,                                                                 // 42
+    0,                                                                 // 43
+    0,                                                                 // 44
+    day_45_48_fog_64x64_bits,                                          // 45
+    0,                                                                 // 46
+    0,                                                                 // 47
+    day_45_48_fog_64x64_bits,                                          // 48
+    0,                                                                 // 49
+    0,                                                                 // 50
+    day_51_53_55_drizzle_64x64_bits,                                   // 51
+    0,                                                                 // 52
+    day_51_53_55_drizzle_64x64_bits,                                   // 53
+    0,                                                                 // 54
+    day_51_53_55_drizzle_64x64_bits,                                   // 55
+    day_56_57_freezingDrizzle_64x64_bits,                              // 56
+    day_56_57_freezingDrizzle_64x64_bits,                              // 57
+    0,                                                                 // 58
+    0,                                                                 // 59
+    0,                                                                 // 60
+    day_61_63_rainSlightModerate_64x64_bits,                           // 61
+    0,                                                                 // 62
+    day_61_63_rainSlightModerate_64x64_bits,                           // 63
+    0,                                                                 // 64
+    day_65_rainHeavyIntensity_64x64_bits,                              // 65
+    day_66_67_freezingRain_64x64_bits,                                 // 66
+    day_66_67_freezingRain_64x64_bits,                                 // 67
+    0,                                                                 // 68
+    0,                                                                 // 69
+    0,                                                                 // 70
+    day_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_64x64_bits, // 71
+    0,                                                                 // 72
+    day_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_64x64_bits, // 73
+    0,                                                                 // 74
+    day_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_64x64_bits, // 75
+    0,                                                                 // 76
+    day_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_64x64_bits, // 77
+    0,                                                                 // 78
+    0,                                                                 // 79
+    day_80_81_82_rainShowers_64x64_bits,                               // 80
+    day_80_81_82_rainShowers_64x64_bits,                               // 81
+    day_80_81_82_rainShowers_64x64_bits,                               // 82
+    0,                                                                 // 83
+    0,                                                                 // 84
+    day_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_64x64_bits, // 85
+    day_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_64x64_bits, // 86
+    0,                                                                 // 87
+    0,                                                                 // 88
+    0,                                                                 // 89
+    0,                                                                 // 90
+    0,                                                                 // 91
+    0,                                                                 // 92
+    0,                                                                 // 93
+    0,                                                                 // 94
+    day_95_thunderstorm_64x64_bits,                                    // 95
+    day_96_99_thunderstormHail_64x64_bits,                             // 96
+    0,                                                                 // 97
+    0,                                                                 // 98
+    day_96_99_thunderstormHail_64x64_bits                              // 99
+};
+const unsigned char *night_weatherIcons_64x64_bits[] = {
+    night_0_clearSky_64x64_bits,                                         // 0
+    night_1_mainlyClear_64x64_bits,                                      // 1
+    night_2_mainlyClear_64x64_bits,                                      // 2
+    night_3_overcast_64x64_bits,                                         // 3
+    0,                                                                   // 4
+    0,                                                                   // 5
+    0,                                                                   // 6
+    0,                                                                   // 7
+    0,                                                                   // 8
+    0,                                                                   // 9
+    0,                                                                   // 10
+    0,                                                                   // 11
+    0,                                                                   // 12
+    0,                                                                   // 13
+    0,                                                                   // 14
+    0,                                                                   // 15
+    0,                                                                   // 16
+    0,                                                                   // 17
+    0,                                                                   // 18
+    0,                                                                   // 19
+    0,                                                                   // 20
+    0,                                                                   // 21
+    0,                                                                   // 22
+    0,                                                                   // 23
+    0,                                                                   // 24
+    0,                                                                   // 25
+    0,                                                                   // 26
+    0,                                                                   // 27
+    0,                                                                   // 28
+    0,                                                                   // 29
+    0,                                                                   // 30
+    0,                                                                   // 31
+    0,                                                                   // 32
+    0,                                                                   // 33
+    0,                                                                   // 34
+    0,                                                                   // 35
+    0,                                                                   // 36
+    0,                                                                   // 37
+    0,                                                                   // 38
+    0,                                                                   // 39
+    0,                                                                   // 40
+    0,                                                                   // 41
+    0,                                                                   // 42
+    0,                                                                   // 43
+    0,                                                                   // 44
+    night_45_48_fog_64x64_bits,                                          // 45
+    0,                                                                   // 46
+    0,                                                                   // 47
+    night_45_48_fog_64x64_bits,                                          // 48
+    0,                                                                   // 49
+    0,                                                                   // 50
+    night_51_53_55_drizzle_64x64_bits,                                   // 51
+    0,                                                                   // 52
+    night_51_53_55_drizzle_64x64_bits,                                   // 53
+    0,                                                                   // 54
+    night_51_53_55_drizzle_64x64_bits,                                   // 55
+    night_56_57_freezingDrizzle_64x64_bits,                              // 56
+    night_56_57_freezingDrizzle_64x64_bits,                              // 57
+    0,                                                                   // 58
+    0,                                                                   // 59
+    0,                                                                   // 60
+    night_61_63_rainSlightModerate_64x64_bits,                           // 61
+    0,                                                                   // 62
+    night_61_63_rainSlightModerate_64x64_bits,                           // 63
+    0,                                                                   // 64
+    night_65_rainHeavyIntensity_64x64_bits,                              // 65
+    night_66_67_freezingRain_64x64_bits,                                 // 66
+    night_66_67_freezingRain_64x64_bits,                                 // 67
+    0,                                                                   // 68
+    0,                                                                   // 69
+    0,                                                                   // 70
+    night_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_64x64_bits, // 71
+    0,                                                                   // 72
+    night_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_64x64_bits, // 73
+    0,                                                                   // 74
+    night_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_64x64_bits, // 75
+    0,                                                                   // 76
+    night_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_64x64_bits, // 77
+    0,                                                                   // 78
+    0,                                                                   // 79
+    night_80_81_82_rainShowers_64x64_bits,                               // 80
+    night_80_81_82_rainShowers_64x64_bits,                               // 81
+    night_80_81_82_rainShowers_64x64_bits,                               // 82
+    0,                                                                   // 83
+    0,                                                                   // 84
+    night_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_64x64_bits, // 85
+    night_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_64x64_bits, // 86
+    0,                                                                   // 87
+    0,                                                                   // 88
+    0,                                                                   // 89
+    0,                                                                   // 90
+    0,                                                                   // 91
+    0,                                                                   // 92
+    0,                                                                   // 93
+    0,                                                                   // 94
+    night_95_thunderstorm_64x64_bits,                                    // 95
+    night_96_99_thunderstormHail_64x64_bits,                             // 96
+    0,                                                                   // 97
+    0,                                                                   // 98
+    night_96_99_thunderstormHail_64x64_bits                              // 99
+};
+
+const unsigned char **weatherIcons_64x64_bits[] = {
+    day_weatherIcons_64x64_bits,
+    night_weatherIcons_64x64_bits};
+
+const int weatherIcons_64x64_width = day_0_clearSky_64x64_width;
+const int weatherIcons_64x64_height = day_0_clearSky_64x64_height;
+
+// Icons 72x72
+const unsigned char *day_weatherIcons_72x72_bits[] = {
+    day_0_clearSky_72x72_bits,                                         // 0
+    day_1_mainlyClear_72x72_bits,                                      // 1
+    day_2_mainlyClear_72x72_bits,                                      // 2
+    day_3_overcast_72x72_bits,                                         // 3
+    0,                                                                 // 4
+    0,                                                                 // 5
+    0,                                                                 // 6
+    0,                                                                 // 7
+    0,                                                                 // 8
+    0,                                                                 // 9
+    0,                                                                 // 10
+    0,                                                                 // 11
+    0,                                                                 // 12
+    0,                                                                 // 13
+    0,                                                                 // 14
+    0,                                                                 // 15
+    0,                                                                 // 16
+    0,                                                                 // 17
+    0,                                                                 // 18
+    0,                                                                 // 19
+    0,                                                                 // 20
+    0,                                                                 // 21
+    0,                                                                 // 22
+    0,                                                                 // 23
+    0,                                                                 // 24
+    0,                                                                 // 25
+    0,                                                                 // 26
+    0,                                                                 // 27
+    0,                                                                 // 28
+    0,                                                                 // 29
+    0,                                                                 // 30
+    0,                                                                 // 31
+    0,                                                                 // 32
+    0,                                                                 // 33
+    0,                                                                 // 34
+    0,                                                                 // 35
+    0,                                                                 // 36
+    0,                                                                 // 37
+    0,                                                                 // 38
+    0,                                                                 // 39
+    0,                                                                 // 40
+    0,                                                                 // 41
+    0,                                                                 // 42
+    0,                                                                 // 43
+    0,                                                                 // 44
+    day_45_48_fog_72x72_bits,                                          // 45
+    0,                                                                 // 46
+    0,                                                                 // 47
+    day_45_48_fog_72x72_bits,                                          // 48
+    0,                                                                 // 49
+    0,                                                                 // 50
+    day_51_53_55_drizzle_72x72_bits,                                   // 51
+    0,                                                                 // 52
+    day_51_53_55_drizzle_72x72_bits,                                   // 53
+    0,                                                                 // 54
+    day_51_53_55_drizzle_72x72_bits,                                   // 55
+    day_56_57_freezingDrizzle_72x72_bits,                              // 56
+    day_56_57_freezingDrizzle_72x72_bits,                              // 57
+    0,                                                                 // 58
+    0,                                                                 // 59
+    0,                                                                 // 60
+    day_61_63_rainSlightModerate_72x72_bits,                           // 61
+    0,                                                                 // 62
+    day_61_63_rainSlightModerate_72x72_bits,                           // 63
+    0,                                                                 // 64
+    day_65_rainHeavyIntensity_72x72_bits,                              // 65
+    day_66_67_freezingRain_72x72_bits,                                 // 66
+    day_66_67_freezingRain_72x72_bits,                                 // 67
+    0,                                                                 // 68
+    0,                                                                 // 69
+    0,                                                                 // 70
+    day_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_72x72_bits, // 71
+    0,                                                                 // 72
+    day_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_72x72_bits, // 73
+    0,                                                                 // 74
+    day_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_72x72_bits, // 75
+    0,                                                                 // 76
+    day_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_72x72_bits, // 77
+    0,                                                                 // 78
+    0,                                                                 // 79
+    day_80_81_82_rainShowers_72x72_bits,                               // 80
+    day_80_81_82_rainShowers_72x72_bits,                               // 81
+    day_80_81_82_rainShowers_72x72_bits,                               // 82
+    0,                                                                 // 83
+    0,                                                                 // 84
+    day_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_72x72_bits, // 85
+    day_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_72x72_bits, // 86
+    0,                                                                 // 87
+    0,                                                                 // 88
+    0,                                                                 // 89
+    0,                                                                 // 90
+    0,                                                                 // 91
+    0,                                                                 // 92
+    0,                                                                 // 93
+    0,                                                                 // 94
+    day_95_thunderstorm_72x72_bits,                                    // 95
+    day_96_99_thunderstormHail_72x72_bits,                             // 96
+    0,                                                                 // 97
+    0,                                                                 // 98
+    day_96_99_thunderstormHail_72x72_bits                              // 99
+};
+const unsigned char *night_weatherIcons_72x72_bits[] = {
+    night_0_clearSky_72x72_bits,                                         // 0
+    night_1_mainlyClear_72x72_bits,                                      // 1
+    night_2_mainlyClear_72x72_bits,                                      // 2
+    night_3_overcast_72x72_bits,                                         // 3
+    0,                                                                   // 4
+    0,                                                                   // 5
+    0,                                                                   // 6
+    0,                                                                   // 7
+    0,                                                                   // 8
+    0,                                                                   // 9
+    0,                                                                   // 10
+    0,                                                                   // 11
+    0,                                                                   // 12
+    0,                                                                   // 13
+    0,                                                                   // 14
+    0,                                                                   // 15
+    0,                                                                   // 16
+    0,                                                                   // 17
+    0,                                                                   // 18
+    0,                                                                   // 19
+    0,                                                                   // 20
+    0,                                                                   // 21
+    0,                                                                   // 22
+    0,                                                                   // 23
+    0,                                                                   // 24
+    0,                                                                   // 25
+    0,                                                                   // 26
+    0,                                                                   // 27
+    0,                                                                   // 28
+    0,                                                                   // 29
+    0,                                                                   // 30
+    0,                                                                   // 31
+    0,                                                                   // 32
+    0,                                                                   // 33
+    0,                                                                   // 34
+    0,                                                                   // 35
+    0,                                                                   // 36
+    0,                                                                   // 37
+    0,                                                                   // 38
+    0,                                                                   // 39
+    0,                                                                   // 40
+    0,                                                                   // 41
+    0,                                                                   // 42
+    0,                                                                   // 43
+    0,                                                                   // 44
+    night_45_48_fog_72x72_bits,                                          // 45
+    0,                                                                   // 46
+    0,                                                                   // 47
+    night_45_48_fog_72x72_bits,                                          // 48
+    0,                                                                   // 49
+    0,                                                                   // 50
+    night_51_53_55_drizzle_72x72_bits,                                   // 51
+    0,                                                                   // 52
+    night_51_53_55_drizzle_72x72_bits,                                   // 53
+    0,                                                                   // 54
+    night_51_53_55_drizzle_72x72_bits,                                   // 55
+    night_56_57_freezingDrizzle_72x72_bits,                              // 56
+    night_56_57_freezingDrizzle_72x72_bits,                              // 57
+    0,                                                                   // 58
+    0,                                                                   // 59
+    0,                                                                   // 60
+    night_61_63_rainSlightModerate_72x72_bits,                           // 61
+    0,                                                                   // 62
+    night_61_63_rainSlightModerate_72x72_bits,                           // 63
+    0,                                                                   // 64
+    night_65_rainHeavyIntensity_72x72_bits,                              // 65
+    night_66_67_freezingRain_72x72_bits,                                 // 66
+    night_66_67_freezingRain_72x72_bits,                                 // 67
+    0,                                                                   // 68
+    0,                                                                   // 69
+    0,                                                                   // 70
+    night_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_72x72_bits, // 71
+    0,                                                                   // 72
+    night_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_72x72_bits, // 73
+    0,                                                                   // 74
+    night_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_72x72_bits, // 75
+    0,                                                                   // 76
+    night_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_72x72_bits, // 77
+    0,                                                                   // 78
+    0,                                                                   // 79
+    night_80_81_82_rainShowers_72x72_bits,                               // 80
+    night_80_81_82_rainShowers_72x72_bits,                               // 81
+    night_80_81_82_rainShowers_72x72_bits,                               // 82
+    0,                                                                   // 83
+    0,                                                                   // 84
+    night_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_72x72_bits, // 85
+    night_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_72x72_bits, // 86
+    0,                                                                   // 87
+    0,                                                                   // 88
+    0,                                                                   // 89
+    0,                                                                   // 90
+    0,                                                                   // 91
+    0,                                                                   // 92
+    0,                                                                   // 93
+    0,                                                                   // 94
+    night_95_thunderstorm_72x72_bits,                                    // 95
+    night_96_99_thunderstormHail_72x72_bits,                             // 96
+    0,                                                                   // 97
+    0,                                                                   // 98
+    night_96_99_thunderstormHail_72x72_bits                              // 99
+};
+
+const unsigned char **weatherIcons_72x72_bits[] = {
+    day_weatherIcons_72x72_bits,
+    night_weatherIcons_72x72_bits};
+
+const int weatherIcons_72x72_width = day_0_clearSky_72x72_width;
+const int weatherIcons_72x72_height = day_0_clearSky_72x72_height;
+
+// Icons 96x96
+const unsigned char *day_weatherIcons_96x96_bits[] = {
+    day_0_clearSky_96x96_bits,                                         // 0
+    day_1_mainlyClear_96x96_bits,                                      // 1
+    day_2_mainlyClear_96x96_bits,                                      // 2
+    day_3_overcast_96x96_bits,                                         // 3
+    0,                                                                 // 4
+    0,                                                                 // 5
+    0,                                                                 // 6
+    0,                                                                 // 7
+    0,                                                                 // 8
+    0,                                                                 // 9
+    0,                                                                 // 10
+    0,                                                                 // 11
+    0,                                                                 // 12
+    0,                                                                 // 13
+    0,                                                                 // 14
+    0,                                                                 // 15
+    0,                                                                 // 16
+    0,                                                                 // 17
+    0,                                                                 // 18
+    0,                                                                 // 19
+    0,                                                                 // 20
+    0,                                                                 // 21
+    0,                                                                 // 22
+    0,                                                                 // 23
+    0,                                                                 // 24
+    0,                                                                 // 25
+    0,                                                                 // 26
+    0,                                                                 // 27
+    0,                                                                 // 28
+    0,                                                                 // 29
+    0,                                                                 // 30
+    0,                                                                 // 31
+    0,                                                                 // 32
+    0,                                                                 // 33
+    0,                                                                 // 34
+    0,                                                                 // 35
+    0,                                                                 // 36
+    0,                                                                 // 37
+    0,                                                                 // 38
+    0,                                                                 // 39
+    0,                                                                 // 40
+    0,                                                                 // 41
+    0,                                                                 // 42
+    0,                                                                 // 43
+    0,                                                                 // 44
+    day_45_48_fog_96x96_bits,                                          // 45
+    0,                                                                 // 46
+    0,                                                                 // 47
+    day_45_48_fog_96x96_bits,                                          // 48
+    0,                                                                 // 49
+    0,                                                                 // 50
+    day_51_53_55_drizzle_96x96_bits,                                   // 51
+    0,                                                                 // 52
+    day_51_53_55_drizzle_96x96_bits,                                   // 53
+    0,                                                                 // 54
+    day_51_53_55_drizzle_96x96_bits,                                   // 55
+    day_56_57_freezingDrizzle_96x96_bits,                              // 56
+    day_56_57_freezingDrizzle_96x96_bits,                              // 57
+    0,                                                                 // 58
+    0,                                                                 // 59
+    0,                                                                 // 60
+    day_61_63_rainSlightModerate_96x96_bits,                           // 61
+    0,                                                                 // 62
+    day_61_63_rainSlightModerate_96x96_bits,                           // 63
+    0,                                                                 // 64
+    day_65_rainHeavyIntensity_96x96_bits,                              // 65
+    day_66_67_freezingRain_96x96_bits,                                 // 66
+    day_66_67_freezingRain_96x96_bits,                                 // 67
+    0,                                                                 // 68
+    0,                                                                 // 69
+    0,                                                                 // 70
+    day_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_96x96_bits, // 71
+    0,                                                                 // 72
+    day_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_96x96_bits, // 73
+    0,                                                                 // 74
+    day_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_96x96_bits, // 75
+    0,                                                                 // 76
+    day_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_96x96_bits, // 77
+    0,                                                                 // 78
+    0,                                                                 // 79
+    day_80_81_82_rainShowers_96x96_bits,                               // 80
+    day_80_81_82_rainShowers_96x96_bits,                               // 81
+    day_80_81_82_rainShowers_96x96_bits,                               // 82
+    0,                                                                 // 83
+    0,                                                                 // 84
+    day_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_96x96_bits, // 85
+    day_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_96x96_bits, // 86
+    0,                                                                 // 87
+    0,                                                                 // 88
+    0,                                                                 // 89
+    0,                                                                 // 90
+    0,                                                                 // 91
+    0,                                                                 // 92
+    0,                                                                 // 93
+    0,                                                                 // 94
+    day_95_thunderstorm_96x96_bits,                                    // 95
+    day_96_99_thunderstormHail_96x96_bits,                             // 96
+    0,                                                                 // 97
+    0,                                                                 // 98
+    day_96_99_thunderstormHail_96x96_bits                              // 99
+};
+const unsigned char *night_weatherIcons_96x96_bits[] = {
+    night_0_clearSky_96x96_bits,                                         // 0
+    night_1_mainlyClear_96x96_bits,                                      // 1
+    night_2_mainlyClear_96x96_bits,                                      // 2
+    night_3_overcast_96x96_bits,                                         // 3
+    0,                                                                   // 4
+    0,                                                                   // 5
+    0,                                                                   // 6
+    0,                                                                   // 7
+    0,                                                                   // 8
+    0,                                                                   // 9
+    0,                                                                   // 10
+    0,                                                                   // 11
+    0,                                                                   // 12
+    0,                                                                   // 13
+    0,                                                                   // 14
+    0,                                                                   // 15
+    0,                                                                   // 16
+    0,                                                                   // 17
+    0,                                                                   // 18
+    0,                                                                   // 19
+    0,                                                                   // 20
+    0,                                                                   // 21
+    0,                                                                   // 22
+    0,                                                                   // 23
+    0,                                                                   // 24
+    0,                                                                   // 25
+    0,                                                                   // 26
+    0,                                                                   // 27
+    0,                                                                   // 28
+    0,                                                                   // 29
+    0,                                                                   // 30
+    0,                                                                   // 31
+    0,                                                                   // 32
+    0,                                                                   // 33
+    0,                                                                   // 34
+    0,                                                                   // 35
+    0,                                                                   // 36
+    0,                                                                   // 37
+    0,                                                                   // 38
+    0,                                                                   // 39
+    0,                                                                   // 40
+    0,                                                                   // 41
+    0,                                                                   // 42
+    0,                                                                   // 43
+    0,                                                                   // 44
+    night_45_48_fog_96x96_bits,                                          // 45
+    0,                                                                   // 46
+    0,                                                                   // 47
+    night_45_48_fog_96x96_bits,                                          // 48
+    0,                                                                   // 49
+    0,                                                                   // 50
+    night_51_53_55_drizzle_96x96_bits,                                   // 51
+    0,                                                                   // 52
+    night_51_53_55_drizzle_96x96_bits,                                   // 53
+    0,                                                                   // 54
+    night_51_53_55_drizzle_96x96_bits,                                   // 55
+    night_56_57_freezingDrizzle_96x96_bits,                              // 56
+    night_56_57_freezingDrizzle_96x96_bits,                              // 57
+    0,                                                                   // 58
+    0,                                                                   // 59
+    0,                                                                   // 60
+    night_61_63_rainSlightModerate_96x96_bits,                           // 61
+    0,                                                                   // 62
+    night_61_63_rainSlightModerate_96x96_bits,                           // 63
+    0,                                                                   // 64
+    night_65_rainHeavyIntensity_96x96_bits,                              // 65
+    night_66_67_freezingRain_96x96_bits,                                 // 66
+    night_66_67_freezingRain_96x96_bits,                                 // 67
+    0,                                                                   // 68
+    0,                                                                   // 69
+    0,                                                                   // 70
+    night_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_96x96_bits, // 71
+    0,                                                                   // 72
+    night_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_96x96_bits, // 73
+    0,                                                                   // 74
+    night_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_96x96_bits, // 75
+    0,                                                                   // 76
+    night_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_96x96_bits, // 77
+    0,                                                                   // 78
+    0,                                                                   // 79
+    night_80_81_82_rainShowers_96x96_bits,                               // 80
+    night_80_81_82_rainShowers_96x96_bits,                               // 81
+    night_80_81_82_rainShowers_96x96_bits,                               // 82
+    0,                                                                   // 83
+    0,                                                                   // 84
+    night_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_96x96_bits, // 85
+    night_71_73_75_77_85_86_snowFall_snowGraings_snowShowers_96x96_bits, // 86
+    0,                                                                   // 87
+    0,                                                                   // 88
+    0,                                                                   // 89
+    0,                                                                   // 90
+    0,                                                                   // 91
+    0,                                                                   // 92
+    0,                                                                   // 93
+    0,                                                                   // 94
+    night_95_thunderstorm_96x96_bits,                                    // 95
+    night_96_99_thunderstormHail_96x96_bits,                             // 96
+    0,                                                                   // 97
+    0,                                                                   // 98
+    night_96_99_thunderstormHail_96x96_bits                              // 99
+};
+
+const unsigned char **weatherIcons_96x96_bits[] = {
+    day_weatherIcons_96x96_bits,
+    night_weatherIcons_96x96_bits};
+
+const int weatherIcons_96x96_width = day_0_clearSky_96x96_width;
+const int weatherIcons_96x96_height = day_0_clearSky_96x96_height;
+
 // .---------------------------------------------.
 // | _____                 _   _                 |
 // ||  ___|   _ _ __   ___| |_(_) ___  _ __  ___ |
@@ -254,6 +905,27 @@ String englischeWeekDaysDisplay[8] = {" ", "Monday", "Tuesday", "Wednesday", "Th
 // ||  _|| |_| | | | | (__| |_| | (_) | | | \__ \|
 // ||_|   \__,_|_| |_|\___|\__|_|\___/|_| |_|___/|
 // '---------------------------------------------'
+
+int isDay0_or_Night1(String timeToCompare, String SunriseTime, String SunsetTime)
+{
+    Serial.print("timeToCompare: ");
+    Serial.print(timeToCompare);
+    Serial.print("SunriseTime: ");
+    Serial.print(SunriseTime);
+    Serial.print("SunsetTime: ");
+    Serial.println(SunsetTime);
+
+    uint8_t timeToCompareHH = ((timeToCompare[0] - '0') * 10) + (timeToCompare[1] - '0');
+    uint8_t timeToCompareMM = ((timeToCompare[3] - '0') * 10) + (timeToCompare[4] - '0');
+
+    uint8_t SunriseTimeHH = ((SunriseTime[0] - '0') * 10) + (SunriseTime[1] - '0');
+    uint8_t SunriseTimeMM = ((SunriseTime[3] - '0') * 10) + (SunriseTime[4] - '0');
+
+    uint8_t SunsetTimeHH = ((SunsetTime[0] - '0') * 10) + (SunsetTime[1] - '0');
+    uint8_t SunsetTimeMM = ((SunsetTime[3] - '0') * 10) + (SunsetTime[4] - '0');
+
+    return 0;
+}
 
 // .-------------------------------------.
 // |  ___        _   _ _                 |
@@ -733,6 +1405,12 @@ void displayManager_generateTodaysWeatherHourlyForecastWindow(int hourIndex, uin
         precipitation_Width = Get_DrawedStringSize_EN(hourlyRain_mm_Text, &HOURLY_RAIN_FONT);
         Paint_DrawString_EN(HOURLY_RAIN_POSITION_X, HOURLY_RAIN_POSITION_Y, hourlyRain_mm_Text, &HOURLY_RAIN_FONT, WHITE, BLACK);
     }
+
+    // Testing Hourly Weather-Icon --> best size is 64
+    uint16_t startx = HOURLY_FORECAST_TEMPERATURE_X + 95; // DATE_AND_TIME_FRAME_X + 20;
+    uint16_t starty = HOURLY_FORECAST_TEMPERATURE_Y + 25; // DATE_AND_TIME_FRAME_START_Y + 20;
+    uint16_t width = 64;
+    Paint_DrawRectangle(startx, starty, (startx + width), (starty + width), BLACK, DOT_PIXEL_1X1, DRAW_FILL_FULL);
 }
 
 void displayManager_generateTodaysWeather()
@@ -747,6 +1425,19 @@ void displayManager_generateTodaysWeather()
     // Hourly Forecast
     displayManager_generateTodaysWeatherHourlyForecastWindow((rtc_getHour() + TIME_INCREMENT_HOURLY_FORECAST), HOURLY_FORECAST_3_HOURS_POSITION_X, HOURLY_FORECAST_3_HOURS_POSITION_Y);
     displayManager_generateTodaysWeatherHourlyForecastWindow((rtc_getHour() + TIME_INCREMENT_HOURLY_FORECAST + TIME_INCREMENT_HOURLY_FORECAST), HOURLY_FORECAST_6_HOURS_POSITION_X, HOURLY_FORECAST_6_HOURS_POSITION_Y);
+
+    // Paint_DrawImage(day_0_clearSky_80x80_bits, (DATE_AND_TIME_FRAME_X + 20), (DATE_AND_TIME_FRAME_START_Y + 20), day_0_clearSky_80x80_width, day_0_clearSky_80x80_height);
+    // Paint_DrawImage(day_0_clearSky_72x72_bits, (DATE_AND_TIME_FRAME_X + 20), (DATE_AND_TIME_FRAME_START_Y + 20 + 5 + day_0_clearSky_80x80_height), day_0_clearSky_72x72_width, day_0_clearSky_72x72_height);
+    // Paint_DrawImage(day_0_clearSky_64x64_bits, (DATE_AND_TIME_FRAME_X + 20 + 5 + day_0_clearSky_80x80_width), (DATE_AND_TIME_FRAME_START_Y + 20), day_0_clearSky_64x64_width, day_0_clearSky_64x64_height);
+    // Paint_DrawImage(day_0_clearSky_24x24_bits, (DATE_AND_TIME_FRAME_X + 20 + 5 + day_0_clearSky_80x80_width + day_0_clearSky_64x64_width + 5), (DATE_AND_TIME_FRAME_START_Y + 20), day_0_clearSky_24x24_width, day_0_clearSky_24x24_height);
+
+    // Testing Current Weather-Icon --> best size ist 96x96
+    uint16_t startx = TODAYS_WEATHER_TITLE_X + 120; // DATE_AND_TIME_FRAME_X + 20;
+    uint16_t starty = TODAYS_WEATHER_TITLE_Y + 20;  // DATE_AND_TIME_FRAME_START_Y + 20;
+    uint16_t width = 96;
+    // Paint_DrawRectangle(startx, starty, (startx + width), (starty + width), BLACK, DOT_PIXEL_1X1, DRAW_FILL_FULL);
+
+    Paint_DrawImage(weatherIcons_96x96_bits[0][weatherAPI_getCurrentWeatherCode()], startx, starty, weatherIcons_96x96_width, weatherIcons_96x96_height);
 }
 
 // .-----------------------.
@@ -888,6 +1579,12 @@ void displayManager_generateDailyWeatherForecastWindow(int dayIndex, uint16_t st
 
     Paint_DrawImage(daylight_16x16_bits, DAILY_FORECAST_DAYLIGHT_TIME_ICON_POSITION_X, DAILY_FORECAST_DAYLIGHT_TIME_ICON_POSITION_Y, daylight_16x16_width, daylight_16x16_height);
     Paint_DrawString_EN(DAILY_FORECAST_DAYLIGHT_TIME_POSITION_X, DAILY_FORECAST_DAYLIGHT_TIME_POSITION_Y, sunriseDailyText, &DAILY_FORECAST_DAYLIGHT_FONT, WHITE, BLACK);
+
+    // Testing Hourly Weather-Icon --> best size is 72
+    uint16_t startx = DAILY_FORECAST_SPACER_X + 95;                         // DATE_AND_TIME_FRAME_X + 20;
+    uint16_t starty = DAILY_FORECAST_WEEKDAY_TEXT_UNDERLINE_POSITION_Y + 0; // DATE_AND_TIME_FRAME_START_Y + 20;
+    uint16_t width = 72;
+    Paint_DrawRectangle(startx, starty, (startx + width), (starty + width), BLACK, DOT_PIXEL_1X1, DRAW_FILL_FULL);
 }
 
 void displayManager_generateDailyWeatherForecast()

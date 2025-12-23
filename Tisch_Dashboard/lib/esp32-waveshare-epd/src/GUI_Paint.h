@@ -81,7 +81,9 @@
 #include "utility/Debug.h"
 #include "DEV_Config.h"
 #include "fonts.h"
-#include "icons_images/weatherIcons.c"
+#include "icons_images/weatherIcons_64x64.c"
+#include "icons_images/weatherIcons_72x72.c"
+#include "icons_images/weatherIcons_96x96.c"
 #include "icons_images/Icons_house_24x24.c"
 #include "icons_images/sun_rise_set_24x24.c"
 #include "icons_images/temperatureHighLow_24x24.c"
@@ -93,6 +95,8 @@
 #include "icons_images/cloudCoverIcon_32x32.c"
 #include "icons_images/daylight_24x24.c"
 #include "icons_images/daylight_16x16.c"
+// Delete not used icon-sets in the end - same for the fonts
+
 /**
  * Image attributes
  **/
