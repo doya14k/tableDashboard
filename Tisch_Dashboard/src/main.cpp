@@ -163,6 +163,11 @@ void setup()
   weatherAPI_init();
   Serial.println("WeatherAPIInit done");
 
+  Serial.println("BusAPIInit started");
+  // Bus API initialize
+  busAPI_init();
+  Serial.println("BusAPIInit done");
+
   Serial.println("DisplayManagerInit started");
   // Display initialize
   displayManager_init();
@@ -184,11 +189,15 @@ void loop()
   static uint8_t old_minutes = rtc_getMinutes();
   static uint8_t new_minutes = rtc_getMinutes();
 
-  
   new_minutes = rtc_getMinutes();
   if (old_minutes != new_minutes)
   {
     old_minutes = new_minutes;
+    if ((new_minutes % 5) == 0)
+    {
+      Serial.println("Update Bus Data");
+      busAPI_updateBusData();
+    }
     weatherAPI_updateWeatherData();
     Serial.println("Update Display");
     // displayManager_refreshDisplay();

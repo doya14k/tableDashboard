@@ -19,6 +19,7 @@
 #include "RTCManager.h"
 #include "TempSensorManager.h"
 #include "WeatherAPI_Manager.h"
+#include "BusAPI_Manager.h"
 
 // -------------------------------------------
 // KONSTANTEN & DEFINITIONEN

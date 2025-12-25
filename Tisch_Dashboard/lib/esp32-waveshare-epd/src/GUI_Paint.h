@@ -95,6 +95,8 @@
 #include "icons_images/cloudCoverIcon_32x32.c"
 #include "icons_images/daylight_24x24.c"
 #include "icons_images/daylight_16x16.c"
+#include "icons_images/oeV_48x27.c"
+#include "icons_images/oeV_32x18.c"
 // Delete not used icon-sets in the end - same for the fonts
 
 /**

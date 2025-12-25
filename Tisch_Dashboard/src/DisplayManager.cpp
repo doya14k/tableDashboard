@@ -262,6 +262,35 @@ String englischeWeekDaysDisplay[8] = {" ", "Monday", "Tuesday", "Wednesday", "Th
 #define DAILY_WEATHER_ICON_WIDTH weatherIcons_72x72_width
 #define DAILY_WEATHER_ICON_HEIGHT weatherIcons_72x72_height
 
+// Fahrplan position definitions ------------------------------------------------------------------------------------------------------------------------------
+
+#define FAHRPLAN_TITLE_POSITION_X (DATE_AND_TIME_FRAME_X + 10)
+#define FAHRPLAN_TITLE_POSITION_Y (DATE_AND_TIME_FRAME_START_Y + 5)
+#define FAHRPLAN_TITLE_FONT OrbitronBold22
+#define FAHRLPAN_TITLE_UNDERLINE_START_X (FAHRPLAN_TITLE_POSITION_X)
+#define FAHRPLAN_TITLE_UNDERLINE_END_X (FAHRLPAN_TITLE_UNDERLINE_START_X + FahrplanTitleText_Width)
+#define FAHRPLAN_TITLE_UNDERLINE_Y (FAHRPLAN_TITLE_POSITION_Y + FAHRPLAN_TITLE_FONT.Height + 2)
+
+#define BUS_CONNECTION_SPACER_Y 15
+#define BUS_WINDOW_POSITION_X (FAHRPLAN_TITLE_POSITION_X + 0)
+#define BUS_WINDOW_1_POSITION_Y (FAHRPLAN_TITLE_POSITION_Y + FAHRPLAN_TITLE_FONT.Height + 10)
+#define BUS_WINDOW_2_POSITION_Y (BUS_WINDOW_1_POSITION_Y + bus_32x18_height + BUS_CONNECTION_SPACER_Y)
+#define BUS_WINDOW_3_POSITION_Y (BUS_WINDOW_2_POSITION_Y + bus_32x18_height + BUS_CONNECTION_SPACER_Y)
+#define BUS_WINDOW_4_POSITION_Y (BUS_WINDOW_3_POSITION_Y + bus_32x18_height + BUS_CONNECTION_SPACER_Y)
+
+#define FAHRPLAN_LINE_NUMBER_POSITION_X startPosition_X
+#define FAHRPLAN_LINE_NUMBER_POSITION_Y startPosition_Y
+#define FAHRPLAN_LINE_NUMBER_FONT OrbitronBold18
+
+#define TRAVEL_ICON_POSITION_X (FAHRPLAN_LINE_NUMBER_POSITION_X + LineNumberText_Width + 25)
+#define TRAVEL_ICON_POSITION_Y (FAHRPLAN_LINE_NUMBER_POSITION_Y + ((FAHRPLAN_LINE_NUMBER_FONT.Height - bus_32x18_height) / 2))
+#define BUS_TYPE "bus"
+#define POST_TYPE "post"
+
+#define FAHRPLAN_DEPARTURE_TIME_POSITION_X (TRAVEL_ICON_POSITION_X + bus_32x18_width + 15)
+#define FAHRPLAN_DEPARTURE_TIME_POSITION_Y (FAHRPLAN_LINE_NUMBER_POSITION_Y)
+#define FARHPLAN_DEPARTURE_TIME_FONT OrbitronBold18
+
 // .----------------------------------------------------------------------.
 // |__        __         _   _                   ___                      |
 // |\ \      / /__  __ _| |_| |__   ___ _ __    |_ _|___ ___  _ __        |
@@ -1706,6 +1735,82 @@ void displayManager_generateDailyWeatherForecast()
     displayManager_generateDailyWeatherForecastWindow(IN_3_DAYS_TIME_INDEX, DAY_THREE_FORECAST_WINDOW_X, DAY_THREE_FORECAST_WINDOW_Y);
 }
 
+// .------------------------------------------.
+// | _____     _                _             |
+// ||  ___|_ _| |__  _ __ _ __ | | __ _ _ __  |
+// || |_ / _` | '_ \| '__| '_ \| |/ _` | '_ \ |
+// ||  _| (_| | | | | |  | |_) | | (_| | | | ||
+// ||_|  \__,_|_| |_|_|  | .__/|_|\__,_|_| |_||
+// |                     |_|                  |
+// '------------------------------------------'
+
+void displayManager_generateFahplanConnectionWindow(int connectionIndex, uint16_t startPosition_X, uint16_t startPosition_Y)
+{
+
+    char LineNumberText[4];
+    sprintf(LineNumberText, "%s", busAPI_getConnectionLine(connectionIndex));
+
+    uint16_t LineNumberText_Width = Get_DrawedStringSize_EN(LineNumberText, &FAHRPLAN_LINE_NUMBER_FONT);
+    Paint_DrawString_EN(FAHRPLAN_LINE_NUMBER_POSITION_X, FAHRPLAN_LINE_NUMBER_POSITION_Y, LineNumberText, &FAHRPLAN_LINE_NUMBER_FONT, BLACK, WHITE);
+
+    // is the connection a bus or a train/something else?
+    if ((busAPI_getConnectionTypeOfTransport(connectionIndex) == BUS_TYPE) || (busAPI_getConnectionTypeOfTransport(connectionIndex) == POST_TYPE))
+    {
+        Paint_DrawImage(bus_32x18_bits, TRAVEL_ICON_POSITION_X, TRAVEL_ICON_POSITION_Y, bus_32x18_width, bus_32x18_height);
+    }
+    else
+    {
+        Paint_DrawImage(bullet_train_32x18_bits, TRAVEL_ICON_POSITION_X, TRAVEL_ICON_POSITION_Y, bullet_train_32x18_width, bullet_train_32x18_height);
+    }
+
+    // Departure and arrival time
+    char DepartureTimeText[25];
+    sprintf(DepartureTimeText, "%s --> %s", busAPI_getConnectionDepartureTime(connectionIndex), busAPI_getConnectionArrivalTime(connectionIndex));
+
+    uint16_t DepartureTimeText_Width = Get_DrawedStringSize_EN(DepartureTimeText, &FARHPLAN_DEPARTURE_TIME_FONT);
+    Paint_DrawString_EN(FAHRPLAN_DEPARTURE_TIME_POSITION_X, FAHRPLAN_DEPARTURE_TIME_POSITION_Y, DepartureTimeText, &FARHPLAN_DEPARTURE_TIME_FONT, WHITE, BLACK);
+}
+
+void displayManager_generateFahrplan()
+{
+    // Fahrplan Titel
+    char FahrplanTitleText[10];
+    sprintf(FahrplanTitleText, "Fahrplan");
+
+    uint16_t FahrplanTitleText_Width = Get_DrawedStringSize_EN(FahrplanTitleText, &FAHRPLAN_TITLE_FONT);
+    Paint_DrawString_EN(FAHRPLAN_TITLE_POSITION_X, FAHRPLAN_TITLE_POSITION_Y, FahrplanTitleText, &FAHRPLAN_TITLE_FONT, WHITE, BLACK);
+    Paint_DrawLine(FAHRLPAN_TITLE_UNDERLINE_START_X, FAHRPLAN_TITLE_UNDERLINE_Y, FAHRPLAN_TITLE_UNDERLINE_END_X, FAHRPLAN_TITLE_UNDERLINE_Y, BLACK, DOT_PIXEL_1X1, LINE_STYLE_SOLID);
+
+#define FAHRPLAN_DESTINATION_TEXT_FONT OrbitronRegular12
+#define FAHRPLAN_DESTINATION_TEXT_POSITION_X (FAHRPLAN_TITLE_POSITION_X + FahrplanTitleText_Width + 20)
+#define FAHRPLAN_DESTINATION_TEXT_POSITION_Y (FAHRPLAN_TITLE_POSITION_Y + ((FAHRPLAN_TITLE_FONT.Height - FAHRPLAN_DESTINATION_TEXT_FONT.Height) / 2))
+
+    // Generate Departure and Arrival Destination names
+    char departureAndArrivalDestinationText[100];
+    sprintf(departureAndArrivalDestinationText, "%s -->", busAPI_getConnection_DepartureDestination());
+    uint16_t departureAndArrivalDestinationText_Width = Get_DrawedStringSize_EN(departureAndArrivalDestinationText, &FAHRPLAN_DESTINATION_TEXT_FONT);
+    Paint_DrawString_EN(FAHRPLAN_DESTINATION_TEXT_POSITION_X, FAHRPLAN_DESTINATION_TEXT_POSITION_Y, departureAndArrivalDestinationText, &FAHRPLAN_DESTINATION_TEXT_FONT, WHITE, BLACK);
+
+    // Generate the max four next connections
+    int numberOfConnections = busAPI_getAvailableConnections();
+    if (numberOfConnections >= 1)
+    {
+        displayManager_generateFahplanConnectionWindow(0, BUS_WINDOW_POSITION_X, BUS_WINDOW_1_POSITION_Y);
+    }
+    if (numberOfConnections >= 2)
+    {
+        displayManager_generateFahplanConnectionWindow(1, BUS_WINDOW_POSITION_X, BUS_WINDOW_2_POSITION_Y);
+    }
+    if (numberOfConnections >= 3)
+    {
+        displayManager_generateFahplanConnectionWindow(2, BUS_WINDOW_POSITION_X, BUS_WINDOW_3_POSITION_Y);
+    }
+    if (numberOfConnections >= 4)
+    {
+        displayManager_generateFahplanConnectionWindow(3, BUS_WINDOW_POSITION_X, BUS_WINDOW_4_POSITION_Y);
+    }
+}
+
 // .-----------------.
 // | ___       _ _   |
 // ||_ _|_ __ (_) |_ |
@@ -1770,11 +1875,20 @@ void displayManager_updateDisplay()
     // EPD_7IN5_V2_Init();
 
     Paint_Clear(WHITE);
+    // Generate Date and Time
     displayManager_generateTimeAndDateText();
+
+    // Generate Home Temperature
     displayManager_generateHomeTemperature();
+
+    // Generate Weather
     displayManager_generateTodaysWeather();
     displayManager_generateDailyWeatherForecast();
 
+    // Generate Fahrplan
+    displayManager_generateFahrplan();
+
+    // Generate Outlines
     displayManager_drawBoxOutlines();
 
     EPD_7IN5_V2_Display(weatherPage);
