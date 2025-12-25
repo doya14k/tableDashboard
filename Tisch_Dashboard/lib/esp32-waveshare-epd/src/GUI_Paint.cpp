@@ -674,6 +674,8 @@ uint16_t Paint_DrawChar_modified(UWORD Xpoint, UWORD Ypoint, const char Acsii_Ch
 
                 // To determine whether the font background color and screen background color is consistent
                 //  0xFF is white background for e-paper
+
+                // Foreground is black, background is white
                 if (FONT_BACKGROUND == Color_Background)
                 { // this process is to speed up the scan
 
@@ -683,17 +685,20 @@ uint16_t Paint_DrawChar_modified(UWORD Xpoint, UWORD Ypoint, const char Acsii_Ch
                     // Paint_DrawPoint(Xpoint + Column, Ypoint + Page, Color_Foreground, DOT_PIXEL_DFT, DOT_STYLE_DFT);
                 }
                 // 0x00 is black background for e-paper
+
+                // Foreground is white, background is black
                 else
                 {
-                    if (*ptr & (0x80 >> (Column % 8)))
+                    if ((*ptr & (0x80 >> (Column % 8))))
                     {
+                        // if the pixel is black, then it is normally a part of foreground
                         pixelCountInColumn[Column]++;
                         // Paint_SetPixel(Xpoint + Column, Ypoint + Page, Color_Foreground);
                         // Paint_DrawPoint(Xpoint + Column, Ypoint + Page, Color_Foreground, DOT_PIXEL_DFT, DOT_STYLE_DFT);
                     }
                     else
                     {
-                        pixelCountInColumn[Column]++;
+                        // pixelCountInColumn[Column]++;
                         // Paint_SetPixel(Xpoint + Column, Ypoint + Page, Color_Background);
                         // Paint_DrawPoint(Xpoint + Column, Ypoint + Page, Color_Background, DOT_PIXEL_DFT, DOT_STYLE_DFT);
                     }
@@ -745,8 +750,47 @@ uint16_t Paint_DrawChar_modified(UWORD Xpoint, UWORD Ypoint, const char Acsii_Ch
         ColumnEndright = Font->Width / 3;
     }
 
-    Xpoint += Font->Width / 6; //(Font->Width / 8);
+    // if (columnOffsetLeft < (Font->Width / 6))
+    // {
+    //     columnOffsetLeft -= (Font->Width / 6);
+    // }
+    // else
+    // {
+    //     columnOffsetLeft = 0;
+    // }
 
+    // if (ColumnEndright <= (Font->Width - (Font->Width / 6)))
+    // {
+    //     ColumnEndright += (Font->Width / 6);
+    // }
+    // else
+    // {
+    //     ColumnEndright = Font->Width;
+    // }
+
+    if (FONT_BACKGROUND == Color_Background)
+    {
+        Xpoint += Font->Width / 6; //(Font->Width / 8);
+    }
+    else
+    {
+        if (columnOffsetLeft > (Font->Width / 6))
+        {
+            columnOffsetLeft -= (Font->Width / 6);
+        }
+        else
+        {
+            columnOffsetLeft = 0;
+        }
+        if (ColumnEndright <= (Font->Width - (Font->Width / 6)))
+        {
+            ColumnEndright += (Font->Width / 6);
+        }
+        else
+        {
+            ColumnEndright = Font->Width;
+        }
+    }
     // reset ptr
     ptr = &Font->table[Char_Offset];
 
@@ -757,6 +801,8 @@ uint16_t Paint_DrawChar_modified(UWORD Xpoint, UWORD Ypoint, const char Acsii_Ch
 
             // To determine whether the font background color and screen background color is consistent
             //  0xFF is white background for e-paper
+
+            // Foreground is black, background is white
             if (FONT_BACKGROUND == Color_Background)
             { // this process is to speed up the scan
                 if (Column >= columnOffsetLeft)
@@ -770,19 +816,24 @@ uint16_t Paint_DrawChar_modified(UWORD Xpoint, UWORD Ypoint, const char Acsii_Ch
                 }
             }
             // 0x00 is black background for e-paper
+
+            // Foreground is white, background is black
             else
             {
                 if (Column >= columnOffsetLeft)
                 {
                     if (Column < ColumnEndright)
                     {
-                        if (*ptr & (0x80 >> (Column % 8)))
+                        // Paint every pixel either foreground (white) or background (black)
+                        if ((*ptr & (0x80 >> (Column % 8))))
                         {
+                            // This pixel is normally foreground, therefore paint it foreground
                             Paint_SetPixel((Xpoint + Column - columnOffsetLeft), Ypoint + Page, Color_Foreground);
                             // Paint_DrawPoint(Xpoint + Column, Ypoint + Page, Color_Foreground, DOT_PIXEL_DFT, DOT_STYLE_DFT);
                         }
                         else
                         {
+                            // This pixel is normally background, therefore paint it background
                             Paint_SetPixel((Xpoint + Column - columnOffsetLeft), Ypoint + Page, Color_Background);
                             // Paint_DrawPoint(Xpoint + Column, Ypoint + Page, Color_Background, DOT_PIXEL_DFT, DOT_STYLE_DFT);
                         }
@@ -798,7 +849,14 @@ uint16_t Paint_DrawChar_modified(UWORD Xpoint, UWORD Ypoint, const char Acsii_Ch
     } // Write all
 
     // modification end
-    return ((ColumnEndright - columnOffsetLeft) + (Font->Width / 3)); // return the width of the character plus 2 pixel space
+    if (FONT_BACKGROUND == Color_Background)
+    {
+        return ((ColumnEndright - columnOffsetLeft) + (Font->Width / 3)); // return the width of the character plus 2 pixel space
+    }
+    else
+    {
+        return ((ColumnEndright - columnOffsetLeft)); // + (Font->Width / 3)); // return the width of the character plus 2 pixel space
+    }
 }
 
 // .----------------------------------------------------------------------------.
@@ -850,6 +908,8 @@ uint16_t Get_DrawCharSize_modified(UWORD Xpoint, UWORD Ypoint, const char Acsii_
 
                 // To determine whether the font background color and screen background color is consistent
                 //  0xFF is white background for e-paper
+
+                // Foreground is black, background is white
                 if (FONT_BACKGROUND == Color_Background)
                 { // this process is to speed up the scan
 
@@ -859,17 +919,20 @@ uint16_t Get_DrawCharSize_modified(UWORD Xpoint, UWORD Ypoint, const char Acsii_
                     // Paint_DrawPoint(Xpoint + Column, Ypoint + Page, Color_Foreground, DOT_PIXEL_DFT, DOT_STYLE_DFT);
                 }
                 // 0x00 is black background for e-paper
+
+                // Foreground is white, background is black
                 else
                 {
-                    if (*ptr & (0x80 >> (Column % 8)))
+                    if ((*ptr & (0x80 >> (Column % 8))))
                     {
+                        // if the pixel is  black, then it is normally a part of foreground, so count it as character pixel
                         pixelCountInColumn[Column]++;
                         // Paint_SetPixel(Xpoint + Column, Ypoint + Page, Color_Foreground);
                         // Paint_DrawPoint(Xpoint + Column, Ypoint + Page, Color_Foreground, DOT_PIXEL_DFT, DOT_STYLE_DFT);
                     }
                     else
                     {
-                        pixelCountInColumn[Column]++;
+                        // pixelCountInColumn[Column]++;
                         // Paint_SetPixel(Xpoint + Column, Ypoint + Page, Color_Background);
                         // Paint_DrawPoint(Xpoint + Column, Ypoint + Page, Color_Background, DOT_PIXEL_DFT, DOT_STYLE_DFT);
                     }

@@ -282,7 +282,7 @@ String englischeWeekDaysDisplay[8] = {" ", "Monday", "Tuesday", "Wednesday", "Th
 #define FAHRPLAN_LINE_NUMBER_POSITION_Y startPosition_Y
 #define FAHRPLAN_LINE_NUMBER_FONT OrbitronBold18
 
-#define TRAVEL_ICON_POSITION_X (FAHRPLAN_LINE_NUMBER_POSITION_X + LineNumberText_Width + 25)
+#define TRAVEL_ICON_POSITION_X (FAHRPLAN_LINE_NUMBER_POSITION_X + LineNumberText_Width + 15)
 #define TRAVEL_ICON_POSITION_Y (FAHRPLAN_LINE_NUMBER_POSITION_Y + ((FAHRPLAN_LINE_NUMBER_FONT.Height - bus_32x18_height) / 2))
 #define BUS_TYPE "bus"
 #define POST_TYPE "post"
