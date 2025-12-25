@@ -104,7 +104,7 @@ void rtc_init()
 
     for (uint8_t i = 1; i <= 8; i++)
     {
-        if (englischeWeekDays[i] == timeAPI_getWeekday())
+        if (englischeWeekDays[i] == timeAPI_getWeekday().c_str())
         {
             rtc_weekday = i;
             rtc_weekday_Reg.write(rtc_weekday);

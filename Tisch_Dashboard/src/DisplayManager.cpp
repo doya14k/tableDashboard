@@ -28,7 +28,7 @@ uint8_t dateTextCharCounter = 0;
 #define IN_2_DAYS_TIME_INDEX 2
 #define IN_3_DAYS_TIME_INDEX 3
 
-#define TIME_INCREMENT_HOURLY_FORECAST 3
+#define TIME_INCREMENT_HOURLY_FORECAST 2
 
 String weekDaysDisplay[8] = {" ", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"};
 // String englischeweekDaysDisplay[8] = {" ", "\"Monday\"", "\"Tuesday\"", "\"Wednesday\"", "\"Thursday\"", "\"Friday\"", "\"Saturday\"", "\"Sunday\""}; // old JSON format
@@ -290,6 +290,10 @@ String englischeWeekDaysDisplay[8] = {" ", "Monday", "Tuesday", "Wednesday", "Th
 #define FAHRPLAN_DEPARTURE_TIME_POSITION_X (TRAVEL_ICON_POSITION_X + bus_32x18_width + 15)
 #define FAHRPLAN_DEPARTURE_TIME_POSITION_Y (FAHRPLAN_LINE_NUMBER_POSITION_Y)
 #define FARHPLAN_DEPARTURE_TIME_FONT OrbitronBold18
+
+#define FAHRPLAN_DESTINATION_TEXT_FONT OrbitronRegular12
+#define FAHRPLAN_DESTINATION_TEXT_POSITION_X (FAHRPLAN_TITLE_POSITION_X + FahrplanTitleText_Width + 20)
+#define FAHRPLAN_DESTINATION_TEXT_POSITION_Y (FAHRPLAN_TITLE_POSITION_Y + ((FAHRPLAN_TITLE_FONT.Height - FAHRPLAN_DESTINATION_TEXT_FONT.Height) / 2))
 
 // .----------------------------------------------------------------------.
 // |__        __         _   _                   ___                      |
@@ -1234,7 +1238,7 @@ void displayManager_generateTodaysSunriseAndSunsetTimes()
 
     // Sunrise Today
     char sunriseTodayText[8];
-    sprintf(sunriseTodayText, "%s", weatherAPI_getDailySunriseTime(TODAY_TIME_INDEX));
+    sprintf(sunriseTodayText, "%s", weatherAPI_getDailySunriseTime(TODAY_TIME_INDEX).c_str());
     uint16_t sunriseTextWidth = Get_DrawedStringSize_EN(sunriseTodayText, &TODAY_SUNRISE_FONT);
 
     Paint_DrawString_EN(TODAY_SUNRISE_POSITION_X, TODAY_SUNRISE_POSITION_Y, sunriseTodayText, &TODAY_SUNRISE_FONT, WHITE, BLACK);
@@ -1242,7 +1246,7 @@ void displayManager_generateTodaysSunriseAndSunsetTimes()
 
     // Sunset Today
     char sunsetTodayText[8];
-    sprintf(sunsetTodayText, "%s", weatherAPI_getDailySunsetTime(TODAY_TIME_INDEX));
+    sprintf(sunsetTodayText, "%s", weatherAPI_getDailySunsetTime(TODAY_TIME_INDEX).c_str());
     uint16_t sunsetTextWidth = Get_DrawedStringSize_EN(sunsetTodayText, &TODAY_SUNSET_FONT);
 
     Paint_DrawString_EN(TODAY_SUNSET_POSITION_X, TODAY_SUNSET_POSITION_Y, sunsetTodayText, &TODAY_SUNSET_FONT, WHITE, BLACK);
@@ -1445,7 +1449,7 @@ void displayManager_generateTodaysWeatherHourlyForecastWindow(int hourIndex, uin
 {
     // HourlyForecastTitle
     char hourlyForecastTimeText[10];
-    sprintf(hourlyForecastTimeText, "%s", weatherAPI_getHourlyTime_HH_MM(hourIndex));
+    sprintf(hourlyForecastTimeText, "%s", weatherAPI_getHourlyTime_HH_MM(hourIndex).c_str());
 
     uint16_t hourlyForecastTimeText_Width = Get_DrawedStringSize_EN(hourlyForecastTimeText, &HOURLY_FORECAST_TIME_TEXT_FONT);
     Paint_DrawString_EN(HOURLY_FORECAST_TIME_TEXT_POSITION_X, HOURLY_FORECAST_TIME_TEXT_POSITION_Y, hourlyForecastTimeText, &HOURLY_FORECAST_TIME_TEXT_FONT, WHITE, BLACK);
@@ -1557,7 +1561,7 @@ void displayManager_generateTodaysWeatherHourlyForecastWindow(int hourIndex, uin
     // Serial.print("Hour to compare: ");
     // Serial.println(hourIndexToCompare);
 
-    Paint_DrawImage(weatherIcons_64x64_bits[isDay0_or_Night1(hourIndexToCompare, rtc_getMinutes(), weatherAPI_getDailySunriseTime(dayIndex), weatherAPI_getDailySunsetTime(dayIndex))][weatherAPI_getHourlyWeatherCode(hourIndex)], HOURLY_WEATHER_ICON_POSITION_X, HOURLY_WEATHER_ICON_POSITION_Y, HOURLY_WEATHER_ICON_WIDTH, HOURLY_WEATHER_ICON_HEIGHT);
+    Paint_DrawImage(weatherIcons_64x64_bits[isDay0_or_Night1(hourIndexToCompare, rtc_getMinutes(), weatherAPI_getDailySunriseTime(dayIndex).c_str(), weatherAPI_getDailySunsetTime(dayIndex).c_str())][weatherAPI_getHourlyWeatherCode(hourIndex)], HOURLY_WEATHER_ICON_POSITION_X, HOURLY_WEATHER_ICON_POSITION_Y, HOURLY_WEATHER_ICON_WIDTH, HOURLY_WEATHER_ICON_HEIGHT);
     // Testing Hourly Weather-Icon --> best size is 64x64
     // Paint_DrawRectangle(HOURLY_WEATHER_ICON_POSITION_X, HOURLY_WEATHER_ICON_POSITION_Y, (HOURLY_WEATHER_ICON_POSITION_X + HOURLY_WEATHER_ICON_WIDTH), (HOURLY_WEATHER_ICON_POSITION_Y + HOURLY_WEATHER_ICON_WIDTH), BLACK, DOT_PIXEL_1X1, DRAW_FILL_FULL);
 }
@@ -1572,7 +1576,7 @@ void displayManager_generateTodaysWeather()
     displayManager_generateTodaysWindAndHumidity();
 
     // Current Weather Icon
-    Paint_DrawImage(weatherIcons_96x96_bits[isDay0_or_Night1(rtc_getHour(), rtc_getMinutes(), weatherAPI_getDailySunriseTime(0), weatherAPI_getDailySunsetTime(0))][weatherAPI_getCurrentWeatherCode()], CURRENT_WEATHER_ICON_POSITION_X, CURRENT_WEATHER_ICON_POSITION_Y, CURRENT_WEATHER_ICON_WIDTH, CURRENT_WEATHER_ICON_HEIGHT);
+    Paint_DrawImage(weatherIcons_96x96_bits[isDay0_or_Night1(rtc_getHour(), rtc_getMinutes(), weatherAPI_getDailySunriseTime(0).c_str(), weatherAPI_getDailySunsetTime(0).c_str())][weatherAPI_getCurrentWeatherCode()], CURRENT_WEATHER_ICON_POSITION_X, CURRENT_WEATHER_ICON_POSITION_Y, CURRENT_WEATHER_ICON_WIDTH, CURRENT_WEATHER_ICON_HEIGHT);
     // Testing Current Weather-Icon --> best size ist 96x96
     // Paint_DrawRectangle(startx, starty, (CURRENT_WEATHER_ICON_POSITION_X + CURRENT_WEATHER_ICON_WIDTH), (CURRENT_WEATHER_ICON_POSITION_Y + CURRENT_WEATHER_ICON_WIDTH), BLACK, DOT_PIXEL_1X1, DRAW_FILL_FULL); // Testing rectangle
 
@@ -1644,7 +1648,7 @@ void displayManager_generateDailyWeatherForecastWindow(int dayIndex, uint16_t st
 
     // Sunrise Daily
     char sunriseDailyText[8];
-    sprintf(sunriseDailyText, "%s", weatherAPI_getDailySunriseTime(dayIndex));
+    sprintf(sunriseDailyText, "%s", weatherAPI_getDailySunriseTime(dayIndex).c_str());
     uint16_t sunriseDailyTextWidth = Get_DrawedStringSize_EN(sunriseDailyText, &DAILY_FORECAST_SUNRISE_FONT);
 
     Paint_DrawImage(sunrise_24x24_bits, DAILY_FORECAST_SUNRISE_ICON_POSITION_X, DAILY_FORECAST_SUNRISE_ICON_POSITION_Y, sunrise_24x24_width, sunrise_24x24_height);
@@ -1652,7 +1656,7 @@ void displayManager_generateDailyWeatherForecastWindow(int dayIndex, uint16_t st
 
     // Sunset Daily
     char sunsetDailyText[8];
-    sprintf(sunsetDailyText, "%s", weatherAPI_getDailySunsetTime(dayIndex));
+    sprintf(sunsetDailyText, "%s", weatherAPI_getDailySunsetTime(dayIndex).c_str());
     uint16_t sunsetDailyTextWidth = Get_DrawedStringSize_EN(sunsetDailyText, &DAILY_FORECAST_SUNSET_FONT);
 
     Paint_DrawString_EN(DAILY_FORECAST_SUNSET_POSITION_X, DAILY_FORECAST_SUNSET_POSITION_Y, sunsetDailyText, &DAILY_FORECAST_SUNSET_FONT, WHITE, BLACK);
@@ -1722,8 +1726,8 @@ void displayManager_generateDailyWeatherForecastWindow(int dayIndex, uint16_t st
     Paint_DrawString_EN(DAILY_FORECAST_DAYLIGHT_TIME_POSITION_X, DAILY_FORECAST_DAYLIGHT_TIME_POSITION_Y, sunriseDailyText, &DAILY_FORECAST_DAYLIGHT_FONT, WHITE, BLACK);
 
     // Daily Weather Icon
-    // Paint_DrawImage(weatherIcons_72x72_bits[isDay0_or_Night1(rtc_getHour(), rtc_getMinutes(), weatherAPI_getDailySunriseTime(dayIndex), weatherAPI_getDailySunsetTime(dayIndex))][weatherAPI_getDailyWeatherCode(dayIndex)], DAILY_WEATHER_ICON_POSITION_X, DAILY_WEATHER_ICON_POSITION_Y, DAILY_WEATHER_ICON_WIDTH, DAILY_WEATHER_ICON_HEIGHT);
-    Paint_DrawImage(weatherIcons_72x72_bits[isDay0_or_Night1(rtc_getHour(), rtc_getMinutes(), weatherAPI_getDailySunriseTime(dayIndex), weatherAPI_getDailySunsetTime(dayIndex))][weatherAPI_getHourlyWeatherCode(((dayIndex * 24) - 1))], DAILY_WEATHER_ICON_POSITION_X, DAILY_WEATHER_ICON_POSITION_Y, DAILY_WEATHER_ICON_WIDTH, DAILY_WEATHER_ICON_HEIGHT);
+    // Paint_DrawImage(weatherIcons_72x72_bits[isDay0_or_Night1(rtc_getHour(), rtc_getMinutes(), weatherAPI_getDailySunriseTime(dayIndex).c_str(), weatherAPI_getDailySunsetTime(dayIndex).c_str())][weatherAPI_getDailyWeatherCode(dayIndex)], DAILY_WEATHER_ICON_POSITION_X, DAILY_WEATHER_ICON_POSITION_Y, DAILY_WEATHER_ICON_WIDTH, DAILY_WEATHER_ICON_HEIGHT);
+    Paint_DrawImage(weatherIcons_72x72_bits[isDay0_or_Night1(rtc_getHour(), rtc_getMinutes(), weatherAPI_getDailySunriseTime(dayIndex).c_str(), weatherAPI_getDailySunsetTime(dayIndex).c_str())][weatherAPI_getHourlyWeatherCode(((dayIndex * 24) - 1))], DAILY_WEATHER_ICON_POSITION_X, DAILY_WEATHER_ICON_POSITION_Y, DAILY_WEATHER_ICON_WIDTH, DAILY_WEATHER_ICON_HEIGHT);
     // Testing Daily Weather-Icon --> best size is 72x72
     // Paint_DrawRectangle(DAILY_WEATHER_ICON_POSITION_X, DAILY_WEATHER_ICON_POSITION_Y, (DAILY_WEATHER_ICON_POSITION_X + DAILY_WEATHER_ICON_WIDTH), (DAILY_WEATHER_ICON_POSITION_Y + DAILY_WEATHER_ICON_WIDTH), BLACK, DOT_PIXEL_1X1, DRAW_FILL_FULL);
 }
@@ -1754,7 +1758,7 @@ void displayManager_generateFahplanConnectionWindow(int connectionIndex, uint16_
     Paint_DrawString_EN(FAHRPLAN_LINE_NUMBER_POSITION_X, FAHRPLAN_LINE_NUMBER_POSITION_Y, LineNumberText, &FAHRPLAN_LINE_NUMBER_FONT, BLACK, WHITE);
 
     // is the connection a bus or a train/something else?
-    if ((busAPI_getConnectionTypeOfTransport(connectionIndex).c_str() == BUS_TYPE) || (busAPI_getConnectionTypeOfTransport(connectionIndex).c_str() == POST_TYPE))
+    if ((busAPI_getConnectionTypeOfTransport(connectionIndex) == BUS_TYPE) || (busAPI_getConnectionTypeOfTransport(connectionIndex) == POST_TYPE))
     {
         Paint_DrawImage(bus_32x18_bits, TRAVEL_ICON_POSITION_X, TRAVEL_ICON_POSITION_Y, bus_32x18_width, bus_32x18_height);
     }
@@ -1780,10 +1784,6 @@ void displayManager_generateFahrplan()
     uint16_t FahrplanTitleText_Width = Get_DrawedStringSize_EN(FahrplanTitleText, &FAHRPLAN_TITLE_FONT);
     Paint_DrawString_EN(FAHRPLAN_TITLE_POSITION_X, FAHRPLAN_TITLE_POSITION_Y, FahrplanTitleText, &FAHRPLAN_TITLE_FONT, WHITE, BLACK);
     Paint_DrawLine(FAHRLPAN_TITLE_UNDERLINE_START_X, FAHRPLAN_TITLE_UNDERLINE_Y, FAHRPLAN_TITLE_UNDERLINE_END_X, FAHRPLAN_TITLE_UNDERLINE_Y, BLACK, DOT_PIXEL_1X1, LINE_STYLE_SOLID);
-
-#define FAHRPLAN_DESTINATION_TEXT_FONT OrbitronRegular12
-#define FAHRPLAN_DESTINATION_TEXT_POSITION_X (FAHRPLAN_TITLE_POSITION_X + FahrplanTitleText_Width + 20)
-#define FAHRPLAN_DESTINATION_TEXT_POSITION_Y (FAHRPLAN_TITLE_POSITION_Y + ((FAHRPLAN_TITLE_FONT.Height - FAHRPLAN_DESTINATION_TEXT_FONT.Height) / 2))
 
     // Generate Departure and Arrival Destination names
     char departureAndArrivalDestinationText[100];

@@ -230,7 +230,7 @@ String weatherAPI_getHourlyTime_HH_MM(int hourIndex)
     Serial.print(hourlyTimeHH_MM);
     Serial.println("");
 #endif // PRINT_OUT_DATA
-    return hourlyTimeHH_MM.c_str();
+    return hourlyTimeHH_MM;
 }
 
 double weatherAPI_getHourlyTemperature(int hourIndex)
@@ -367,7 +367,7 @@ String weatherAPI_getDailySunriseTime(int dayIndex)
     Serial.print(sunriseTimeHH_MM);
     Serial.println("");
 #endif // PRINT_OUT_DATA
-    return sunriseTimeHH_MM.c_str();
+    return sunriseTimeHH_MM;
 }
 
 String weatherAPI_getDailySunsetTime(int dayIndex)
@@ -384,7 +384,7 @@ String weatherAPI_getDailySunsetTime(int dayIndex)
     Serial.print(sunsetTimeHH_MM);
     Serial.println("");
 #endif // PRINT_OUT_DATA
-    return sunsetTimeHH_MM.c_str();
+    return sunsetTimeHH_MM;
 }
 
 uint8_t weatherAPI_getDailyWeatherCode(int dayIndex)
