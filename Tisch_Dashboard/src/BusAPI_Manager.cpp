@@ -64,6 +64,9 @@ void busAPI_updateBusData()
         }
 
         Serial.println("Bus API: JSON parsed successfully!");
+
+        Serial.println("Bus API: Full JSON response:");
+        Serial.println(busAPI_buffer);
     }
     else
     {
@@ -101,7 +104,7 @@ String busAPI_getConnectionDepartureTime(int connectionIndex)
     Serial.print(departureTimeHH_MM);
     Serial.println("");
 #endif // PRINT_OUT_DATA
-    return departureTimeHH_MM.c_str();
+    return departureTimeHH_MM;
 }
 
 String busAPI_getConnectionArrivalTime(int connectionIndex)
@@ -117,7 +120,7 @@ String busAPI_getConnectionArrivalTime(int connectionIndex)
     Serial.print(arrivalTimeHH_MM);
     Serial.println("");
 #endif // PRINT_OUT_DATA
-    return arrivalTimeHH_MM.c_str();
+    return arrivalTimeHH_MM;
 }
 
 String busAPI_getConnectionLine(int connectionIndex)
@@ -130,7 +133,7 @@ String busAPI_getConnectionLine(int connectionIndex)
     Serial.print(line);
     Serial.println("");
 #endif // PRINT_OUT_DATA
-    return line.c_str();
+    return line;
 }
 
 String busAPI_getConnectionTypeOfTransport(int connectionIndex)
@@ -143,17 +146,30 @@ String busAPI_getConnectionTypeOfTransport(int connectionIndex)
     Serial.print(typeOfTransport);
     Serial.println("");
 #endif // PRINT_OUT_DATA
-    return typeOfTransport.c_str();
+    return typeOfTransport;
 }
 
 String busAPI_getConnection_DepartureDestination()
 {
     String departureDestination = busAPI_JSON["points"][0]["text"].as<String>();
-    // departureDestination.remove(0, departureDestination.indexOf(',') + 2); // remove everything before the ',  ' part that is most likely "Chur, "
+    departureDestination.remove(0, departureDestination.indexOf(',') + 2); // remove everything before the ',  ' part that is most likely "Chur, "
 #ifdef PRINT_OUT_DATA
     Serial.print("Connection Departure Destination: ");
     Serial.print(departureDestination);
     Serial.println("");
 #endif // PRINT_OUT_DATA
-    return departureDestination.c_str();
+    return departureDestination;
+}
+
+String busAPI_getConnection_ArrivalDestination()
+{
+    String arrivalDestination = busAPI_JSON["points"][1]["text"].as<String>();
+    // Anfang wird nicht gelöscht, weil die adresse nur Chur ist und mehr nicht
+    // arrivalDestination.remove(0, arrivalDestination.indexOf(',') + 2); // remove everything before the ',  ' part that is most likely "Chur, "
+#ifdef PRINT_OUT_DATA
+    Serial.print("Connection Arrival Destination: ");
+    Serial.print(arrivalDestination);
+    Serial.println("");
+#endif // PRINT_OUT_DATA
+    return arrivalDestination;
 }

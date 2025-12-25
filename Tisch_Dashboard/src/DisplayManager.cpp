@@ -1748,13 +1748,13 @@ void displayManager_generateFahplanConnectionWindow(int connectionIndex, uint16_
 {
 
     char LineNumberText[4];
-    sprintf(LineNumberText, "%s", busAPI_getConnectionLine(connectionIndex));
+    sprintf(LineNumberText, "%s", busAPI_getConnectionLine(connectionIndex).c_str());
 
     uint16_t LineNumberText_Width = Get_DrawedStringSize_EN(LineNumberText, &FAHRPLAN_LINE_NUMBER_FONT);
     Paint_DrawString_EN(FAHRPLAN_LINE_NUMBER_POSITION_X, FAHRPLAN_LINE_NUMBER_POSITION_Y, LineNumberText, &FAHRPLAN_LINE_NUMBER_FONT, BLACK, WHITE);
 
     // is the connection a bus or a train/something else?
-    if ((busAPI_getConnectionTypeOfTransport(connectionIndex) == BUS_TYPE) || (busAPI_getConnectionTypeOfTransport(connectionIndex) == POST_TYPE))
+    if ((busAPI_getConnectionTypeOfTransport(connectionIndex).c_str() == BUS_TYPE) || (busAPI_getConnectionTypeOfTransport(connectionIndex).c_str() == POST_TYPE))
     {
         Paint_DrawImage(bus_32x18_bits, TRAVEL_ICON_POSITION_X, TRAVEL_ICON_POSITION_Y, bus_32x18_width, bus_32x18_height);
     }
@@ -1765,7 +1765,7 @@ void displayManager_generateFahplanConnectionWindow(int connectionIndex, uint16_
 
     // Departure and arrival time
     char DepartureTimeText[25];
-    sprintf(DepartureTimeText, "%s --> %s", busAPI_getConnectionDepartureTime(connectionIndex), busAPI_getConnectionArrivalTime(connectionIndex));
+    sprintf(DepartureTimeText, "%s --> %s", busAPI_getConnectionDepartureTime(connectionIndex).c_str(), busAPI_getConnectionArrivalTime(connectionIndex).c_str());
 
     uint16_t DepartureTimeText_Width = Get_DrawedStringSize_EN(DepartureTimeText, &FARHPLAN_DEPARTURE_TIME_FONT);
     Paint_DrawString_EN(FAHRPLAN_DEPARTURE_TIME_POSITION_X, FAHRPLAN_DEPARTURE_TIME_POSITION_Y, DepartureTimeText, &FARHPLAN_DEPARTURE_TIME_FONT, WHITE, BLACK);
@@ -1787,7 +1787,9 @@ void displayManager_generateFahrplan()
 
     // Generate Departure and Arrival Destination names
     char departureAndArrivalDestinationText[100];
-    sprintf(departureAndArrivalDestinationText, "%s -->", busAPI_getConnection_DepartureDestination());
+    sprintf(departureAndArrivalDestinationText, "%s --> %s", busAPI_getConnection_DepartureDestination().c_str(), busAPI_getConnection_ArrivalDestination().c_str());
+    Serial.print("Departure and Arrival Destination Text: ");
+    Serial.println(departureAndArrivalDestinationText);
     uint16_t departureAndArrivalDestinationText_Width = Get_DrawedStringSize_EN(departureAndArrivalDestinationText, &FAHRPLAN_DESTINATION_TEXT_FONT);
     Paint_DrawString_EN(FAHRPLAN_DESTINATION_TEXT_POSITION_X, FAHRPLAN_DESTINATION_TEXT_POSITION_Y, departureAndArrivalDestinationText, &FAHRPLAN_DESTINATION_TEXT_FONT, WHITE, BLACK);
 

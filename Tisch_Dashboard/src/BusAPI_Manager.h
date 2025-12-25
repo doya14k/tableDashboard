@@ -38,6 +38,7 @@ String busAPI_getConnectionLine(int connectionIndex);
 String busAPI_getConnectionTypeOfTransport(int connectionIndex);
 
 String busAPI_getConnection_DepartureDestination();
+String busAPI_getConnection_ArrivalDestination();
 
 
 #endif // BUS_API_MANAGER_H
