@@ -198,9 +198,10 @@ void loop()
       Serial.println("Update Bus Data");
       busAPI_updateBusData();
     }
+    Serial.println("Update Weather Data");
     weatherAPI_updateWeatherData();
     Serial.println("Update Display");
-    // displayManager_refreshDisplay();
+    // displayManager_refreshDisplay();§
     displayManager_updateDisplay();
     Serial.println("Update Done");
   }

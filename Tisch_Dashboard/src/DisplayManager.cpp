@@ -291,9 +291,13 @@ String englischeWeekDaysDisplay[8] = {" ", "Monday", "Tuesday", "Wednesday", "Th
 #define FAHRPLAN_DEPARTURE_TIME_POSITION_Y (FAHRPLAN_LINE_NUMBER_POSITION_Y)
 #define FARHPLAN_DEPARTURE_TIME_FONT OrbitronBold18
 
-#define FAHRPLAN_DESTINATION_TEXT_FONT OrbitronRegular12
+#define FAHRPLAN_DESTINATION_TEXT_FONT OrbitronBold12
 #define FAHRPLAN_DESTINATION_TEXT_POSITION_X (FAHRPLAN_TITLE_POSITION_X + FahrplanTitleText_Width + 20)
 #define FAHRPLAN_DESTINATION_TEXT_POSITION_Y (FAHRPLAN_TITLE_POSITION_Y + ((FAHRPLAN_TITLE_FONT.Height - FAHRPLAN_DESTINATION_TEXT_FONT.Height) / 2))
+
+#define FAHRPLAN_DEPARTURE_FONT OrbitronBold10
+#define FAHRPLAN_DEPARTURE_STOP_POSITION_X (FAHRPLAN_DEPARTURE_TIME_POSITION_X + DepartureTimeText_Width + 10)
+#define FAHRPLAN_DEPARTURE_STOP_POSITION_Y (FAHRPLAN_DEPARTURE_TIME_POSITION_Y + ((FARHPLAN_DEPARTURE_TIME_FONT.Height - FAHRPLAN_DEPARTURE_FONT.Height) / 2))
 
 // .----------------------------------------------------------------------.
 // |__        __         _   _                   ___                      |
@@ -1751,10 +1755,12 @@ void displayManager_generateDailyWeatherForecast()
 void displayManager_generateFahplanConnectionWindow(int connectionIndex, uint16_t startPosition_X, uint16_t startPosition_Y)
 {
 
-    char LineNumberText[4];
+    char LineNumberText[6];
     sprintf(LineNumberText, "%s", busAPI_getConnectionLine(connectionIndex).c_str());
 
     uint16_t LineNumberText_Width = Get_DrawedStringSize_EN(LineNumberText, &FAHRPLAN_LINE_NUMBER_FONT);
+
+    // Paint_DrawRectangle((FAHRPLAN_LINE_NUMBER_POSITION_X), (FAHRPLAN_LINE_NUMBER_POSITION_Y + 1), (FAHRPLAN_LINE_NUMBER_POSITION_X + LineNumberText_Width), (FAHRPLAN_LINE_NUMBER_POSITION_Y + FAHRPLAN_LINE_NUMBER_FONT.Height + 1), BLACK, DOT_PIXEL_1X1, DRAW_FILL_FULL); // Making the background black because the font is inverted
     Paint_DrawString_EN(FAHRPLAN_LINE_NUMBER_POSITION_X, FAHRPLAN_LINE_NUMBER_POSITION_Y, LineNumberText, &FAHRPLAN_LINE_NUMBER_FONT, BLACK, WHITE);
 
     // is the connection a bus or a train/something else?
@@ -1769,10 +1775,17 @@ void displayManager_generateFahplanConnectionWindow(int connectionIndex, uint16_
 
     // Departure and arrival time
     char DepartureTimeText[25];
-    sprintf(DepartureTimeText, "%s --> %s", busAPI_getConnectionDepartureTime(connectionIndex).c_str(), busAPI_getConnectionArrivalTime(connectionIndex).c_str());
+    sprintf(DepartureTimeText, "%s --> %s |", busAPI_getConnectionDepartureTime(connectionIndex).c_str(), busAPI_getConnectionArrivalTime(connectionIndex).c_str());
 
     uint16_t DepartureTimeText_Width = Get_DrawedStringSize_EN(DepartureTimeText, &FARHPLAN_DEPARTURE_TIME_FONT);
     Paint_DrawString_EN(FAHRPLAN_DEPARTURE_TIME_POSITION_X, FAHRPLAN_DEPARTURE_TIME_POSITION_Y, DepartureTimeText, &FARHPLAN_DEPARTURE_TIME_FONT, WHITE, BLACK);
+
+    // Departure stop
+    char DepartureStopText[25];
+    sprintf(DepartureStopText, "from %s", busAPI_getConnection_DepartureStopName(connectionIndex).c_str());
+
+    uint16_t DepartureStopText_Width = Get_DrawedStringSize_EN(DepartureStopText, &FAHRPLAN_DEPARTURE_FONT);
+    Paint_DrawString_EN(FAHRPLAN_DEPARTURE_STOP_POSITION_X, FAHRPLAN_DEPARTURE_STOP_POSITION_Y, DepartureStopText, &FAHRPLAN_DEPARTURE_FONT, WHITE, BLACK);
 }
 
 void displayManager_generateFahrplan()

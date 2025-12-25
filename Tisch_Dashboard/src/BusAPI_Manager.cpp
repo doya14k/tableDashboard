@@ -65,8 +65,8 @@ void busAPI_updateBusData()
 
         Serial.println("Bus API: JSON parsed successfully!");
 
-        Serial.println("Bus API: Full JSON response:");
-        Serial.println(busAPI_buffer);
+        // Serial.println("Bus API: Full JSON response:");
+        // Serial.println(busAPI_buffer);
     }
     else
     {
@@ -172,4 +172,16 @@ String busAPI_getConnection_ArrivalDestination()
     Serial.println("");
 #endif // PRINT_OUT_DATA
     return arrivalDestination;
+}
+
+String busAPI_getConnection_DepartureStopName(int connectionIndex)
+{
+    String departureStopName = busAPI_JSON["connections"][connectionIndex]["legs"][1]["name"].as<String>();
+    departureStopName.remove(0, departureStopName.indexOf(',') + 2); // remove everything before the ',  ' part that is most likely "Chur, "
+#ifdef PRINT_OUT_DATA
+    Serial.print("Connection Departure Stop Name: ");
+    Serial.print(departureStopName);
+    Serial.println("");
+#endif // PRINT_OUT_DATA
+    return departureStopName;
 }
